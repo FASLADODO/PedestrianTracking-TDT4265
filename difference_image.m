@@ -3,6 +3,7 @@ clc;
 clear all;
 
 %------------------------------------------------
+% Video and display setup
 
 TRACKING_SEQUENCE = 'seq_hotel';
 TRACKING_SEQUENCE = 'seq_eth';
@@ -12,36 +13,39 @@ TRACKING_DURATION = 3;
 
 VIDEO_FILE                  = ['ewap_dataset/' TRACKING_SEQUENCE '/' TRACKING_SEQUENCE '.avi'];
 
-DIFFERENCE_IMAGE_THRESHOLD  = 0.1;
-COMPONENT_AREA_THRESHOLD    = 10;
-CLOSE_DISC_RADIUS           = 3;
-
-DISPLAY_DIFFERENCE_IMAGE    = true;
-DISPLAY_MARKERS             = true;
-
-%------------------------------------------------
-% Video setup
-
-vidReader = VideoReader(VIDEO_FILE);
-vidReader.CurrentTime = TRACKING_START;
+videoReader = VideoReader(VIDEO_FILE);
+videoReader.CurrentTime = TRACKING_START;
 
 hasReadFirstFrame = false;
 previousFrameGray = [];
 
 figureHandle = figure(1);
 
+DISPLAY_DIFFERENCE_IMAGE    = true;
+DISPLAY_MARKERS             = true;
+
+%------------------------------------------------
+% Detection setup
+
+DIFFERENCE_IMAGE_THRESHOLD  = 0.1;
+COMPONENT_AREA_THRESHOLD    = 10;
+CLOSE_DISC_RADIUS           = 3;
+
 %------------------------------------------------
 % ROI setup
 
+REGION_WIDTH  = 30;
+REGION_HEIGHT = 30;
 
+regions = {};
 
 %------------------------------------------------
 
-while (hasFrame(vidReader) && (vidReader.CurrentTime < TRACKING_START + TRACKING_DURATION))
+while (hasFrame(videoReader) && (videoReader.CurrentTime < TRACKING_START + TRACKING_DURATION))
 
     % Collect data
     
-    currentFrame = readFrame(vidReader);
+    currentFrame = readFrame(videoReader);
     currentFrame = rgb2gray(currentFrame);
     
     if (~hasReadFirstFrame)
@@ -74,7 +78,9 @@ while (hasFrame(vidReader) && (vidReader.CurrentTime < TRACKING_START + TRACKING
         end
     end
     
-    % 
+    % Region of interest calculations
+    
+    
     
     % Display tracking results
     
