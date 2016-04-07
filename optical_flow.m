@@ -4,8 +4,9 @@ clear all;
 
 %------------------------------------------------
 
-VIDEO_FILE                  = 'drone_moving_camera.mp4';
+VIDEO_FILE                  = 'ewap_dataset/seq_eth/seq_eth.avi';
 
+MAGNITUDE_THRESHOLD         = 0.1;
 COMPONENT_AREA_THRESHOLD    = 50;
 CLOSE_DISC_RADIUS           = 3;
 
@@ -16,14 +17,12 @@ DISPLAY_MARKERS             = true;
 %------------------------------------------------
 
 vidReader = VideoReader(VIDEO_FILE);
+vidReader.CurrentTime = 30;
+
 opticFlow = opticalFlowLK('NoiseThreshold',0.009);
 
-while hasFrame(vidReader)
-    
-    % Correct geometric transform of camera
-    
-    
-    
+while hasFrame(vidReader) && (vidReader.CurrentTime < 32)
+
     % Estimate flow
     
     frameRGB = readFrame(vidReader);
@@ -33,7 +32,13 @@ while hasFrame(vidReader)
 
     % Get pixels which move faster than a desired threshold
     
-    magnitude =im2bw(flow.Magnitude, graythresh(flow.Magnitude));
+    if (MAGNITUDE_THRESHOLD == -1)
+        magnitude_threshold = graythresh(flow.Magnitude);
+    else
+        magnitude_threshold = MAGNITUDE_THRESHOLD;
+    end
+    
+    magnitude =im2bw(flow.Magnitude, magnitude_threshold);
     magnitude = imclose(magnitude, strel('disk', CLOSE_DISC_RADIUS));
     magnitude = imfill(magnitude, 'holes');
     
