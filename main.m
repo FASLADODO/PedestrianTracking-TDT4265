@@ -80,6 +80,7 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     % Update general tracking properties
     
     pedestrian_tracker.update_position_histories();
+    pedestrian_tracker.update_state();
     pedestrian_tracker.increment_time();
     
     % Display tracking results

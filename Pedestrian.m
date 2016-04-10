@@ -21,10 +21,14 @@ classdef Pedestrian < handle
         
         function obj = Pedestrian(position_measurement, timestep)
             
+            global c;
+            
             obj.position            = position_measurement;
             obj.position_history    = [];
             obj.velocity            = [0; 0];            
             obj.covariance          = diag([1 1 5 5]);       % Unsure about speed of target, hence greate variance
+            
+            obj.state               = c.INITIALIZATION;
             
             obj.measurement_series  = {};
             
@@ -34,6 +38,27 @@ classdef Pedestrian < handle
         end
         
         %% Misc
+        
+        function update_state(obj)
+           
+            global c;
+            
+            if (strcmp(obj.state, c.INITIALIZATION))
+            
+                valid_measurements = 0;
+                
+                for i = 1:length(obj.measurement_series)
+                    
+                    if (~isempty(obj.measurement_series{i}.positions))
+                        valid_measurements = valid_measurements + 1;
+                    end
+                end
+                
+                if (valid_measurements > c.EXIT_INITIALIZATION_THRESHOLD)
+                    obj.state = c.ACTIVE;
+                end
+            end
+        end
         
         function update_position_history(obj)
             obj.position_history(:, size(obj.position_history, 2) + 1 ) = obj.position;
@@ -48,7 +73,7 @@ classdef Pedestrian < handle
             global c;
             
             if (length(obj.measurement_series) >= c.MEASUREMENT_HISTORY_SIZE)
-                obj.measurement_series{1} = [];
+                obj.measurement_series = {obj.measurement_series{2:end}};
             end
             
             index = length(obj.measurement_series) + 1;
@@ -106,17 +131,32 @@ classdef Pedestrian < handle
             pos = obj.position;
         end
         
+        function color = get_plot_color(obj)
+
+            global c;
+            
+            if (strcmp(obj.state, c.INITIALIZATION))
+                color = 'c';
+            else
+                color = 'b';
+            end
+        end
+        
         function plot_bounding_box(obj)
             
             global c;
             
             configuration = [obj.position(1) - (c.PEDESTRIAN_WIDTH / 2), obj.position(2) - (c.PEDESTRIAN_HEIGHT / 2), c.PEDESTRIAN_WIDTH, c.PEDESTRIAN_HEIGHT];
-            rectangle('Position', configuration, 'EdgeColor', 'b');
+            color = obj.get_plot_color();
+
+            rectangle('Position', configuration, 'EdgeColor', color);
         end
         
         function plot_position_history(obj)
+
+            color = obj.get_plot_color();
             
-            plot(obj.position_history(1, :), obj.position_history(2, :), 'b');
+            plot(obj.position_history(1, :), obj.position_history(2, :), color);
         end
         
         %% Kalman filtering

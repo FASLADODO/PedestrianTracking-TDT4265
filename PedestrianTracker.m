@@ -26,6 +26,13 @@ classdef PedestrianTracker < handle
             obj.timestep = obj.timestep + 1;
         end
         
+        function update_state(obj)
+            
+            for i = 1:length(obj.pedestrians)
+               obj.pedestrians{i}.update_state();
+            end
+        end
+        
         function update_position_histories(obj)
             
             for i = 1:length(obj.pedestrians)
@@ -63,7 +70,9 @@ classdef PedestrianTracker < handle
             
             % If no connection was found initialize a new pedestrian
             
-            obj.pedestrians{length(obj.pedestrians) + 1} = Pedestrian(position_measurement, obj.timestep);
+            index = length(obj.pedestrians) + 1;
+
+            obj.pedestrians{index} = Pedestrian(position_measurement, obj.timestep);
         end
         
         %% Plots

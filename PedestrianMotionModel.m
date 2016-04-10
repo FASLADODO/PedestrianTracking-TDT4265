@@ -21,6 +21,14 @@ classdef PedestrianMotionModel
             
             obj.timestep = 1;
 
+            % Constant velocity motion model
+            %
+            % State:
+            %   x
+            %   y
+            %   x speed
+            %   y speed
+            
             obj.F = [   1   0   obj.timestep    0;
                         0   1   0               obj.timestep;
                         0   0   1               0;
