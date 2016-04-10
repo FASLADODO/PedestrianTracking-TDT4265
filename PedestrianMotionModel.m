@@ -15,7 +15,7 @@ classdef PedestrianMotionModel
     
     methods
         
-        % Constructor
+        %% Constructor
         
         function obj = PedestrianMotionModel()
             
@@ -31,7 +31,6 @@ classdef PedestrianMotionModel
 
             obj.Q = diag([  1   1   5   5]);
             obj.R = diag([  1   1]);
-            
         end
     end
     

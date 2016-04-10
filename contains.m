@@ -1,4 +1,6 @@
-function [pedestrian, belongs_to] = contains(position_measurement, pedestrians, width, height)
+function [pedestrian, belongs_to] = contains(position_measurement, pedestrians)
+
+    global c;
 
     break_flag = false;
     
@@ -16,7 +18,7 @@ function [pedestrian, belongs_to] = contains(position_measurement, pedestrians, 
             
             position_offset = position_measurement - pedestrians{i}.get_position();
            
-            if (abs(position_offset(1)) <= width/2) && (abs(position_offset(2)) <= height/2)
+            if (abs(position_offset(1)) <= (PEDESTRIAN_WIDTH / 2)) && (abs(position_offset(2)) <= (c.PEDESTRIAN_HEIGHT / 2))
                 
                 pedestrian = pedestrians{i};
                 belongs_to = true;

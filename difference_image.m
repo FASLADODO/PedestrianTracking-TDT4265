@@ -36,13 +36,9 @@ c.COMPONENT_AREA_THRESHOLD    = 10;
 c.PEDESTRIAN_WIDTH  = 20;
 c.PEDESTRIAN_HEIGHT = 40;
 
-%------------------------------------------------
-% ROI setup
+c.MEASUREMENT_HISTORY_SIZE = 5;
 
-REGION_WIDTH  = 30;
-REGION_HEIGHT = 30;
-
-pedestrians = {};
+pedestrians = PedestrianContainer();
 pedestrian_motion_model = PedestrianMotionModel();
 
 %------------------------------------------------
@@ -88,35 +84,19 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     
     % Predict position and velocity of pedestrians
     
-    for i = 1:length(pedestrians)
-       pedestrians{i}.kalman_prediction(pedestrian_motion_model);
-    end
+    pedestrians.kalman_prediction(pedestrian_motion_model);
     
     % Register sensor readings
     
+    pedestrians.inititalize_measurement_series(timestep);
+    
     for m = 1:size(position_measurements, 2)
-        
-        [pedestrian, belongs_to] = contains(position_measurements(:, m), pedestrians, c.PEDESTRIAN_WIDTH, c.PEDESTRIAN_HEIGHT);
-        
-        if (belongs_to)
-            measurement.position = position_measurements(:, m);
-            measurement.time = timestep + 1;
-            
-            pedestrian.add_measurement(measurement);
-        else
-            measurement.position = position_measurements(:, m);
-            measurement.time = timestep + 1;
-            
-            new_pedestrian = Pedestrian(measurement);
-            pedestrians{length(pedestrians) + 1} = new_pedestrian;
-        end
+        pedestrians.distribute_position_measurement(position_measurements(:, m), timestep);
     end
     
     % Update pedestrian position and velocity based on sensor measurements
     
-    for i = 1:length(pedestrians)
-       pedestrians{i}.kalman_update(pedestrian_motion_model);
-    end
+    pedestrians.kalman_update(pedestrian_motion_model);
     
     timestep = timestep + 1;
     
@@ -141,10 +121,8 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     end
     
     if (c.DISPLAY_PEDESTRIAN_RECTANGLES)
-        for i = 1:length(pedestrians)
-            pedestrians{i}.plot_bounding_box();
-            pedestrians{i}.plot_position_history();
-        end
+        pedestrians.plot_bounding_boxes();
+        pedestrians.plot_position_histories();
     end
    
     hold off;
