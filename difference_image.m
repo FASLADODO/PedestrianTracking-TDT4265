@@ -1,17 +1,11 @@
 
-%clc;
+clc;
 %clear all;
+
+global c; c = get_constants();
 
 %------------------------------------------------
 % Video and display setup
-
-global c; c = struct();
-
-c.TRACKING_SEQUENCE = 'seq_hotel';
-c.TRACKING_SEQUENCE = 'seq_eth';
-
-c.TRACKING_START = 30;
-c.TRACKING_DURATION = 3;
 
 VIDEO_FILE                  = ['ewap_dataset/' c.TRACKING_SEQUENCE '/' c.TRACKING_SEQUENCE '.avi'];
 
@@ -23,20 +17,8 @@ previousFrameGray = [];
 
 figureHandle = figure(1);
 
-c.DISPLAY_DIFFERENCE_IMAGE      = true;
-c.DISPLAY_MARKERS               = true;
-c.DISPLAY_PEDESTRIAN_RECTANGLES = true;
-
 %------------------------------------------------
 % Detection setup
-
-c.DIFFERENCE_IMAGE_THRESHOLD  = 0.1;
-c.COMPONENT_AREA_THRESHOLD    = 10;
-
-c.PEDESTRIAN_WIDTH  = 20;
-c.PEDESTRIAN_HEIGHT = 40;
-
-c.MEASUREMENT_HISTORY_SIZE = 5;
 
 pedestrians = PedestrianContainer();
 pedestrian_motion_model = PedestrianMotionModel();
