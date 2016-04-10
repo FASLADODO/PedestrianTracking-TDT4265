@@ -5,35 +5,36 @@
 %------------------------------------------------
 % Video and display setup
 
-TRACKING_SEQUENCE = 'seq_hotel';
-TRACKING_SEQUENCE = 'seq_eth';
+global c; c = struct();
 
-TRACKING_START = 30;
-TRACKING_DURATION = 3;
+c.TRACKING_SEQUENCE = 'seq_hotel';
+c.TRACKING_SEQUENCE = 'seq_eth';
 
-VIDEO_FILE                  = ['ewap_dataset/' TRACKING_SEQUENCE '/' TRACKING_SEQUENCE '.avi'];
+c.TRACKING_START = 30;
+c.TRACKING_DURATION = 3;
+
+VIDEO_FILE                  = ['ewap_dataset/' c.TRACKING_SEQUENCE '/' c.TRACKING_SEQUENCE '.avi'];
 
 videoReader = VideoReader(VIDEO_FILE);
-videoReader.CurrentTime = TRACKING_START;
+videoReader.CurrentTime = c.TRACKING_START;
 
 hasReadFirstFrame = false;
 previousFrameGray = [];
 
 figureHandle = figure(1);
 
-DISPLAY_DIFFERENCE_IMAGE      = true;
-DISPLAY_MARKERS               = true;
-DISPLAY_PEDESTRIAN_RECTANGLES = true;
+c.DISPLAY_DIFFERENCE_IMAGE      = true;
+c.DISPLAY_MARKERS               = true;
+c.DISPLAY_PEDESTRIAN_RECTANGLES = true;
 
 %------------------------------------------------
 % Detection setup
 
-DIFFERENCE_IMAGE_THRESHOLD  = 0.1;
-COMPONENT_AREA_THRESHOLD    = 10;
-CLOSE_DISC_RADIUS           = 3;
+c.DIFFERENCE_IMAGE_THRESHOLD  = 0.1;
+c.COMPONENT_AREA_THRESHOLD    = 10;
 
-PEDESTRIAN_WIDTH  = 20;
-PEDESTRIAN_HEIGHT = 40;
+c.PEDESTRIAN_WIDTH  = 20;
+c.PEDESTRIAN_HEIGHT = 40;
 
 %------------------------------------------------
 % ROI setup
@@ -46,9 +47,9 @@ pedestrian_motion_model = PedestrianMotionModel();
 
 %------------------------------------------------
 
-time = 0;
+timestep = 0;
 
-while (hasFrame(videoReader) && (videoReader.CurrentTime < TRACKING_START + TRACKING_DURATION))
+while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.TRACKING_DURATION))
 
     % Collect data
     
@@ -70,7 +71,7 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < TRACKING_START + TRAC
     structuringElement = [1 1 1 1 1 1 1 1 1]';
     structuringElement = repmat(structuringElement, 2, 2);
     
-    differenceImage = im2bw(differenceImage, DIFFERENCE_IMAGE_THRESHOLD);
+    differenceImage = im2bw(differenceImage, c.DIFFERENCE_IMAGE_THRESHOLD);
     differenceImage = imclose(differenceImage, structuringElement);
     
     % Extract connected components
@@ -80,7 +81,7 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < TRACKING_START + TRAC
     
     for i = 1:length(proposed_position_measurement)
        
-        if (proposed_position_measurement(i).Area > COMPONENT_AREA_THRESHOLD)
+        if (proposed_position_measurement(i).Area > c.COMPONENT_AREA_THRESHOLD)
             position_measurements(1:2, size(position_measurements, 2) + 1) = proposed_position_measurement(i).Centroid;
         end
     end
@@ -95,21 +96,20 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < TRACKING_START + TRAC
     
     for m = 1:size(position_measurements, 2)
         
-        [pedestrian, belongs_to] = contains(position_measurements(:, m), pedestrians, PEDESTRIAN_WIDTH, PEDESTRIAN_HEIGHT);
+        [pedestrian, belongs_to] = contains(position_measurements(:, m), pedestrians, c.PEDESTRIAN_WIDTH, c.PEDESTRIAN_HEIGHT);
         
         if (belongs_to)
             measurement.position = position_measurements(:, m);
-            measurement.time = time + 1;
+            measurement.time = timestep + 1;
             
             pedestrian.add_measurement(measurement);
         else
             measurement.position = position_measurements(:, m);
-            measurement.time = time + 1;
+            measurement.time = timestep + 1;
             
             new_pedestrian = Pedestrian(measurement);
             pedestrians{length(pedestrians) + 1} = new_pedestrian;
         end
-        
     end
     
     % Update pedestrian position and velocity based on sensor measurements
@@ -118,13 +118,15 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < TRACKING_START + TRAC
        pedestrians{i}.kalman_update(pedestrian_motion_model);
     end
     
+    timestep = timestep + 1;
+    
     % Display tracking results
     
     if (~ishandle(figureHandle))
         break;
     end
     
-    if (DISPLAY_DIFFERENCE_IMAGE)
+    if (c.DISPLAY_DIFFERENCE_IMAGE)
         imshow(differenceImage);
     else
         imshow(currentFrame);
@@ -132,19 +134,19 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < TRACKING_START + TRAC
     
     hold on;
     
-    if (DISPLAY_MARKERS)
+    if (c.DISPLAY_MARKERS)
         for i = 1:size(position_measurements, 2)
             plot(position_measurements(1, i), position_measurements(2, i), 'rx');
         end
     end
     
-    if (DISPLAY_PEDESTRIAN_RECTANGLES)
+    if (c.DISPLAY_PEDESTRIAN_RECTANGLES)
         for i = 1:length(pedestrians)
-            pedestrians{i}.display(PEDESTRIAN_WIDTH, PEDESTRIAN_HEIGHT);
+            pedestrians{i}.plot_bounding_box();
+            pedestrians{i}.plot_position_history();
         end
     end
    
-    time = time + 1;
     hold off;
     pause(0.05);
 end
