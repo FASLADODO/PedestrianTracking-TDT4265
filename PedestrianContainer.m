@@ -2,6 +2,7 @@ classdef PedestrianContainer < handle
  
     properties (Access = private)
         pedestrians;
+        pedestrian_motion_model;
     end
     
     methods
@@ -10,6 +11,7 @@ classdef PedestrianContainer < handle
         
         function obj = PedestrianContainer()
             obj.pedestrians = {};
+            obj.pedestrian_motion_model = PedestrianMotionModel();
         end
         
         %% Misc
@@ -72,17 +74,17 @@ classdef PedestrianContainer < handle
         
         %% Kalman filter
         
-        function kalman_prediction(obj, pedestrian_motion_model)
+        function kalman_prediction(obj)
             
             for i = 1:length(obj.pedestrians)
-               obj.pedestrians{i}.kalman_prediction(pedestrian_motion_model);
+               obj.pedestrians{i}.kalman_prediction(obj.pedestrian_motion_model);
             end
         end
         
-        function kalman_update(obj, pedestrian_motion_model)
+        function kalman_update(obj)
             
             for i = 1:length(obj.pedestrians)
-               obj.pedestrians{i}.kalman_update(pedestrian_motion_model);
+               obj.pedestrians{i}.kalman_update(obj.pedestrian_motion_model);
             end
         end
     end

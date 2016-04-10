@@ -18,10 +18,9 @@ previousFrameGray = [];
 figureHandle = figure(1);
 
 %------------------------------------------------
-% Detection setup
+% Tracker setup
 
 pedestrians = PedestrianContainer();
-pedestrian_motion_model = PedestrianMotionModel();
 
 %------------------------------------------------
 
@@ -66,7 +65,7 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     
     % Predict position and velocity of pedestrians
     
-    pedestrians.kalman_prediction(pedestrian_motion_model);
+    pedestrians.kalman_prediction();
     
     % Register sensor readings
     
@@ -78,7 +77,7 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     
     % Update pedestrian position and velocity based on sensor measurements
     
-    pedestrians.kalman_update(pedestrian_motion_model);
+    pedestrians.kalman_update();
     pedestrians.update_position_histories();
     
     timestep = timestep + 1;
