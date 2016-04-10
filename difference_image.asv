@@ -1,6 +1,6 @@
 
-%clc;
-%clear all;
+clc;
+clear all;
 
 %------------------------------------------------
 % Video and display setup
@@ -42,7 +42,6 @@ REGION_WIDTH  = 30;
 REGION_HEIGHT = 30;
 
 pedestrians = {};
-pedestrian_motion_model = PedestrianMotionModel();
 
 %------------------------------------------------
 
@@ -87,10 +86,6 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < TRACKING_START + TRAC
     
     % Predict position and velocity of pedestrians
     
-    for i = 1:length(pedestrians)
-       pedestrians{i}.kalman_prediction(pedestrian_motion_model);
-    end
-    
     % Register sensor readings
     
     for m = 1:size(position_measurements, 2)
@@ -112,11 +107,9 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < TRACKING_START + TRAC
         
     end
     
-    % Update pedestrian position and velocity based on sensor measurements
+    % Update pedestrian position and velocity based
     
-    for i = 1:length(pedestrians)
-       pedestrians{i}.kalman_update(pedestrian_motion_model);
-    end
+    
     
     % Display tracking results
     
@@ -139,7 +132,7 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < TRACKING_START + TRAC
     end
     
     if (DISPLAY_PEDESTRIAN_RECTANGLES)
-        for i = 1:length(pedestrians)
+        for i = 1:size(pedestrians, 2)
             pedestrians{i}.display(PEDESTRIAN_WIDTH, PEDESTRIAN_HEIGHT);
         end
     end
