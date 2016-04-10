@@ -1,6 +1,9 @@
-classdef PedestrianContainer < handle
+classdef PedestrianTracker < handle
  
     properties (Access = private)
+        
+        timestep;
+        
         pedestrians;
         pedestrian_motion_model;
     end
@@ -9,12 +12,19 @@ classdef PedestrianContainer < handle
         
         %% Constructor
         
-        function obj = PedestrianContainer()
+        function obj = PedestrianTracker()
+            
+            obj.timestep = 1;
+            
             obj.pedestrians = {};
             obj.pedestrian_motion_model = PedestrianMotionModel();
         end
         
         %% Misc
+
+        function increment_time(obj)
+            obj.timestep = obj.timestep + 1;
+        end
         
         function update_position_histories(obj)
             
@@ -25,14 +35,14 @@ classdef PedestrianContainer < handle
         
         %% Measurement handling
         
-        function inititalize_measurement_series(obj, timestep)
+        function inititalize_measurement_series(obj)
             
             for i = 1:length(obj.pedestrians)
-               obj.pedestrians{i}.initialize_measurement_series(timestep);
+               obj.pedestrians{i}.initialize_measurement_series(obj.timestep);
             end
         end
         
-        function distribute_position_measurement(obj, position_measurement, timestep)
+        function distribute_position_measurement(obj, position_measurement)
             
             global c;
             
@@ -53,7 +63,7 @@ classdef PedestrianContainer < handle
             
             % If no connection was found initialize a new pedestrian
             
-            obj.pedestrians{length(obj.pedestrians) + 1} = Pedestrian(position_measurement, timestep);
+            obj.pedestrians{length(obj.pedestrians) + 1} = Pedestrian(position_measurement, obj.timestep);
         end
         
         %% Plots

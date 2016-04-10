@@ -20,11 +20,9 @@ figureHandle = figure(1);
 %------------------------------------------------
 % Tracker setup
 
-pedestrians = PedestrianContainer();
+pedestrian_tracker = PedestrianTracker();
 
 %------------------------------------------------
-
-timestep = 0;
 
 while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.TRACKING_DURATION))
 
@@ -65,22 +63,24 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     
     % Predict position and velocity of pedestrians
     
-    pedestrians.kalman_prediction();
+    pedestrian_tracker.kalman_prediction();
     
     % Register sensor readings
     
-    pedestrians.inititalize_measurement_series(timestep);
+    pedestrian_tracker.inititalize_measurement_series();
     
     for m = 1:size(position_measurements, 2)
-        pedestrians.distribute_position_measurement(position_measurements(:, m), timestep);
+        pedestrian_tracker.distribute_position_measurement(position_measurements(:, m));
     end
     
     % Update pedestrian position and velocity based on sensor measurements
     
-    pedestrians.kalman_update();
-    pedestrians.update_position_histories();
+    pedestrian_tracker.kalman_update();
     
-    timestep = timestep + 1;
+    % Update general tracking properties
+    
+    pedestrian_tracker.update_position_histories();
+    pedestrian_tracker.increment_time();
     
     % Display tracking results
     
@@ -103,8 +103,8 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     end
     
     if (c.DISPLAY_PEDESTRIAN_RECTANGLES)
-        pedestrians.plot_bounding_boxes();
-        pedestrians.plot_position_histories();
+        pedestrian_tracker.plot_bounding_boxes();
+        pedestrian_tracker.plot_position_histories();
     end
    
     hold off;
