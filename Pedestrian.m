@@ -33,6 +33,12 @@ classdef Pedestrian < handle
             obj.measurement_series{1}.positions = position_measurement;
         end
         
+        %% Misc
+        
+        function update_position_history(obj)
+            obj.position_history(:, size(obj.position_history, 2) + 1 ) = obj.position;
+        end
+        
         %% Measurement handling
         
         % Create an empty measurement series for a new timestep
@@ -158,8 +164,6 @@ classdef Pedestrian < handle
                 obj.velocity = x(3:4);
                 obj.covariance = P;
             end
-            
-            obj.position_history(:, size(obj.position_history, 2) + 1 ) = obj.position;
         end
     end
     

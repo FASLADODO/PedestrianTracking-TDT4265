@@ -12,6 +12,15 @@ classdef PedestrianContainer < handle
             obj.pedestrians = {};
         end
         
+        %% Misc
+        
+        function update_position_histories(obj)
+            
+            for i = 1:length(obj.pedestrians)
+               obj.pedestrians{i}.update_position_history();
+            end
+        end
+        
         %% Measurement handling
         
         function inititalize_measurement_series(obj, timestep)

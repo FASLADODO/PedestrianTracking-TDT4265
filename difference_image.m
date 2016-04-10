@@ -97,6 +97,7 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     % Update pedestrian position and velocity based on sensor measurements
     
     pedestrians.kalman_update(pedestrian_motion_model);
+    pedestrians.update_position_histories();
     
     timestep = timestep + 1;
     
