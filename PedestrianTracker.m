@@ -33,6 +33,21 @@ classdef PedestrianTracker < handle
             end
         end
         
+        function remove_inactive_pedestrians(obj)
+           
+            active_indices = [];
+            
+            for i = 1:length(obj.pedestrians)
+                if(~obj.pedestrians{i}.is_inactive())
+                    active_indices(length(active_indices) + 1) = i;
+                end
+            end
+            
+            if (length(active_indices) < length(obj.pedestrians))
+                obj.pedestrians = {obj.pedestrians{active_indices}};
+            end
+        end
+        
         function update_position_histories(obj)
             
             for i = 1:length(obj.pedestrians)

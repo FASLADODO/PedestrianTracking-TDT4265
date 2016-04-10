@@ -8,11 +8,11 @@ function c = get_constants()
     c.TRACKING_SEQUENCE = 'seq_eth';
 
     c.TRACKING_START = 30;
-    c.TRACKING_DURATION = 3;
+    c.TRACKING_DURATION = 5;
     
     % -----------------------------------------------------------
     
-    c.DISPLAY_DIFFERENCE_IMAGE          = true;
+    c.DISPLAY_DIFFERENCE_IMAGE          = false;
     c.DISPLAY_MARKERS                   = true;
     c.DISPLAY_PEDESTRIAN_RECTANGLES     = true;
     
@@ -30,6 +30,7 @@ function c = get_constants()
     c.PEDESTRIAN_HEIGHT                 = 40;
     c.MEASUREMENT_HISTORY_SIZE          = 5;
     c.EXIT_INITIALIZATION_THRESHOLD     = 3;
+    c.INACTIVE_THRESHOLD                = 0;
     
     c.PEDESTRIAN_INTIALIZATION_COLOR    = 'c';
     c.PEDESTRIAN_ACTIVE_COLOR           = 'b';

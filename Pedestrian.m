@@ -45,18 +45,18 @@ classdef Pedestrian < handle
             
             if (strcmp(obj.state, c.INITIALIZATION))
             
-                valid_measurements = 0;
-                
-                for i = 1:length(obj.measurement_series)
-                    
-                    if (~isempty(obj.measurement_series{i}.positions))
-                        valid_measurements = valid_measurements + 1;
-                    end
-                end
-                
-                if (valid_measurements > c.EXIT_INITIALIZATION_THRESHOLD)
+                if (obj.get_valid_measurements() > c.EXIT_INITIALIZATION_THRESHOLD)
                     obj.state = c.ACTIVE;
                 end
+            end
+        end
+        
+        function inactive = is_inactive(obj)
+            
+            if (obj.get_valid_measurements() <= 0)
+                inactive = true;
+            else
+                inactive = false;
             end
         end
         
@@ -81,6 +81,20 @@ classdef Pedestrian < handle
             obj.measurement_series{index} = struct();
             obj.measurement_series{index}.timestep = timestep;
             obj.measurement_series{index}.positions = [];
+        end
+        
+        % Check how many of the measurements series are nonempty
+        
+        function valid_measurements = get_valid_measurements(obj)
+            
+            valid_measurements = 0;
+                
+            for i = 1:length(obj.measurement_series)
+
+                if (~isempty(obj.measurement_series{i}.positions))
+                    valid_measurements = valid_measurements + 1;
+                end
+            end
         end
         
         % Adds a new position measurement to the current time series

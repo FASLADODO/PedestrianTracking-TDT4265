@@ -31,6 +31,8 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     currentFrame = readFrame(videoReader);
     currentFrame = rgb2gray(currentFrame);
     
+    currentFrame = histeq(currentFrame);
+    
     if (~hasReadFirstFrame)
         previousFrame = currentFrame;
         hasReadFirstFrame = true;
@@ -81,6 +83,7 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     
     pedestrian_tracker.update_position_histories();
     pedestrian_tracker.update_state();
+    pedestrian_tracker.remove_inactive_pedestrians();
     pedestrian_tracker.increment_time();
     
     % Display tracking results
