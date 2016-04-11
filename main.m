@@ -20,6 +20,7 @@ figureHandle = figure(1);
 %------------------------------------------------
 % Tracker setup
 
+pedestrian_detector = PedestrianDetector();
 pedestrian_tracker = PedestrianTracker();
 
 %------------------------------------------------
@@ -32,36 +33,10 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     currentFrame = rgb2gray(currentFrame);
     
     currentFrame = histeq(currentFrame);
-    
-    if (~hasReadFirstFrame)
-        previousFrame = currentFrame;
-        hasReadFirstFrame = true;
-        
-        continue;
-    end
-    
-    % Compute difference image
-    
-    differenceImage = imabsdiff(currentFrame, previousFrame);
-    previousFrame = currentFrame;
-        
-    structuringElement = [1 1 1 1 1 1 1 1 1]';
-    structuringElement = repmat(structuringElement, 2, 2);
-    
-    differenceImage = im2bw(differenceImage, c.DIFFERENCE_IMAGE_THRESHOLD);
-    differenceImage = imclose(differenceImage, structuringElement);
-    
-    % Extract connected components
-    
-    proposed_position_measurement = regionprops(differenceImage);
-    position_measurements = [];
-    
-    for i = 1:length(proposed_position_measurement)
-       
-        if (proposed_position_measurement(i).Area > c.COMPONENT_AREA_THRESHOLD)
-            position_measurements(1:2, size(position_measurements, 2) + 1) = proposed_position_measurement(i).Centroid;
-        end
-    end
+   
+    % Detect pedestrians
+   
+    position_measurements = pedestrian_detector.difference_image_detection(currentFrame);
     
     % Predict position and velocity of pedestrians
     
