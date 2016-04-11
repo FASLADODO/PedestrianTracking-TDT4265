@@ -18,22 +18,38 @@ function c = get_constants()
     c.DISPLAY_ONLY_ACTIVE_PEDESTRIANS   = true;
     
     % -----------------------------------------------------------
-
+    % Detection
+    
+    % Training
+    
+    c.TRAINING_IMAGE_FOLDER             = 'training_examples/';
+    c.TRAINING_IMAGE_WIDTH              = 40;
+    c.TRAINING_IMAGE_HEIGHT             = 40;
+    
+    c.TRAINING_CATEGORY                 = 0;
+    c.TRAINING_TIMESTEPS                = 140:160;
+    
+    % Difference image
+    
     c.DIFFERENCE_IMAGE_THRESHOLD        = 0.1;
     c.COMPONENT_AREA_THRESHOLD          = 10;
+    
+    % Classifiers
+    
+    c.BLOCK_STEP_SIZE                   = 5;
     
     % -----------------------------------------------------------
 
     c.INITIALIZATION                    = 'initialization';
     c.ACTIVE                            = 'active';
     
+    c.PEDESTRIAN_INTIALIZATION_COLOR    = 'c';
+    c.PEDESTRIAN_ACTIVE_COLOR           = 'b';
+    
     c.PEDESTRIAN_WIDTH                  = 20;
     c.PEDESTRIAN_HEIGHT                 = 20;
     c.MEASUREMENT_HISTORY_SIZE          = 5;
     c.EXIT_INITIALIZATION_THRESHOLD     = 3;
     c.INACTIVE_THRESHOLD                = 0;
-    
-    c.PEDESTRIAN_INTIALIZATION_COLOR    = 'c';
-    c.PEDESTRIAN_ACTIVE_COLOR           = 'b';
 end
 

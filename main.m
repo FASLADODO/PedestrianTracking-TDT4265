@@ -2,6 +2,8 @@
 clc;
 %clear all;
 
+warning off;
+
 global c; c = get_constants();
 
 %------------------------------------------------
@@ -37,6 +39,7 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     % Detect pedestrians
    
     position_measurements = pedestrian_detector.difference_image_detection(current_frame);
+    position_measurements = pedestrian_detector.kNN_detection(current_frame);
     
     % Predict position and velocity of pedestrians
     

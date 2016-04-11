@@ -3,7 +3,7 @@ clc;
 
 TRAINING_IMAGE_FOLDER = 'training_examples/';
 
-%% Setup SVM training matrices
+%% Setup training matrices
 
 directory = dir(TRAINING_IMAGE_FOLDER);
 number_of_training_images = length(directory(not([directory.isdir])));

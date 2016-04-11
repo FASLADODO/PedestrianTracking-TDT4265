@@ -20,10 +20,193 @@ classdef PedestrianDetector < handle
             obj.has_previous_frame = false;
         end
         
+        %% Misc
+        
+        function [label, score] = HOG_predictor(obj, classifier, image)
+            
+            HOG_features = extractHOGFeatures(image);
+            [label, score] = predict(classifier, HOG_features);
+        end
+        
         %% Contrast enhancement
         
         function current_frame = adjust_contrast(obj, current_frame)
             current_frame = histeq(current_frame);
+        end
+        
+        %% Classifier training example generation
+        
+        function classifier_training_example_generation(obj)
+            
+            c = get_constants();
+            
+            % Setup
+            
+            VIDEO_FILE_NAME  = ['ewap_dataset/' c.TRACKING_SEQUENCE '/' c.TRACKING_SEQUENCE '.avi'];
+            videoReader = VideoReader(VIDEO_FILE_NAME);
+            
+            % Find out how many previously added images there are and begin to count from there
+
+            base_example_number = 0;
+            directory = dir(c.TRAINING_IMAGE_FOLDER);
+
+            for i = 1:length(directory)
+
+                filename = directory(i).name;
+
+                if (strcmp(filename(1), num2str(c.TRAINING_CATEGORY)))
+
+                    example_number = filename(3:(end - 4));
+                    example_number = str2num(example_number);
+
+                    if (example_number > base_example_number)
+                        base_example_number = example_number;
+                    end
+                end
+            end
+
+            % Gather data
+
+            for i = 1:length(c.TRAINING_TIMESTEPS)
+    
+                timestep = c.TRAINING_TIMESTEPS(i);
+
+                videoReader.CurrentTime = timestep;
+
+                frame = readFrame(videoReader);
+                frame = rgb2gray(frame);
+
+                % Let user pick a point on the image
+
+                imshow(frame);
+
+                while (true)
+
+                    [x,y] = ginput(1);
+
+                    r_x         = x - (c.TRAINING_IMAGE_WIDTH  / 2);
+                    r_y         = y - (c.TRAINING_IMAGE_HEIGHT / 2);
+                    r_width     = c.TRAINING_IMAGE_WIDTH - 1;
+                    r_height    = c.TRAINING_IMAGE_HEIGHT - 1;
+
+                    % Extract training image
+
+                    training_image = imcrop(frame, [r_x, r_y, r_width, r_height]);
+
+                    % Ensure that all training images are of correct size
+                    % This is needed because all HOG feature vector must be of same
+                    % size
+
+                    [training_image_height, training_image_width] = size(training_image);
+
+                    if (training_image_height == c.TRAINING_IMAGE_HEIGHT && training_image_width == c.TRAINING_IMAGE_WIDTH)
+                        break;
+                    end
+                end
+
+                % Write training image, file name
+                % [(TRAINING_CATEGORY)_(EXAMPLE_NUMBER)].png
+
+                imwrite(training_image, [c.TRAINING_IMAGE_FOLDER num2str(c.TRAINING_CATEGORY) '_' num2str(base_example_number + i) '.png']);
+            end
+        end
+        
+        %% Classifier training
+        
+        function classifier_training(obj)
+            
+            c = get_constants();
+            
+            % Setup training matrices
+
+            directory = dir(c.TRAINING_IMAGE_FOLDER);
+            number_of_training_images = length(directory(not([directory.isdir])));
+
+            X = nan(number_of_training_images, 576);
+            Y = nan(number_of_training_images, 1);
+            
+            % Gather training data
+
+            training_image_i = 1;
+
+            for training_category = 0:1
+
+                category_image_i = 1;
+
+                while (true)
+
+                    % If the current exists extract HOG feature descriptor
+                    % and add to training matrix
+                    
+                    filename = [c.TRAINING_IMAGE_FOLDER num2str(training_category) '_' num2str(category_image_i) '.png'];
+
+                    if (exist(filename, 'file'))
+
+                        training_image = imread(filename);
+                        HOG_features = extractHOGFeatures(training_image);
+
+                        X(training_image_i, :) = HOG_features;
+                        Y(training_image_i, :) = training_category;
+                    else
+                        break;
+                    end
+
+                    category_image_i = category_image_i + 1;
+                    training_image_i = training_image_i + 1;
+                end
+            end
+
+            % Train classifiers and store them
+
+            classifier_kNN = fitcknn(X, Y, 'NumNeighbors', 5);
+            classifier_SVM = fitcsvm(X, Y, 'KernelFunction', 'rbf', 'Standardize', true, 'ClassNames', {'0','1'});
+
+            save('classifier_kNN.mat', 'classifier_kNN');
+            save('classifier_SVM.mat', 'classifier_SVM');
+        end
+        
+        %% kNN classifier detection
+        
+        function position_measurements = kNN_detection(obj, current_frame)
+        
+            global c;
+            
+            classifier_kNN = load('classifier_kNN.mat');
+            classifier_kNN = classifier_kNN.classifier_kNN;
+
+            [image_height, image_width] = size(current_frame);
+            
+            % Sliding windows detection using classifier
+
+            detection_points = zeros(image_height, image_width);
+
+            for i = 1:c.BLOCK_STEP_SIZE:(image_width - c.TRAINING_IMAGE_WIDTH - c.BLOCK_STEP_SIZE)
+                for j = 1:c.BLOCK_STEP_SIZE:(image_height - c.TRAINING_IMAGE_HEIGHT - c.BLOCK_STEP_SIZE)
+
+                    block = current_frame(j:(j + c.TRAINING_IMAGE_HEIGHT), i:(i + c.TRAINING_IMAGE_WIDTH));
+                    [label, score] = obj.HOG_predictor(classifier_kNN, block); 
+
+                    if (label == 1 && score(2) >= 1)
+                        detection_points(j, i) = 1;
+                    end
+                end
+            end
+
+            % Convert to position measurements adjusted for rectangle detection window
+
+            position_measurements   = zeros(2, sum(sum(detection_points)));
+            position_measurements_i = 1;
+
+            for i = 1:size(detection_points, 2)
+                for j = 1:size(detection_points, 1)
+
+                    if (detection_points(j, i) == 1)
+
+                        position_measurements(:, position_measurements_i) = [(i + (c.TRAINING_IMAGE_WIDTH / 2)); (j + (c.TRAINING_IMAGE_HEIGHT / 2))];
+                        position_measurements_i = position_measurements_i + 1;
+                    end
+                end
+            end
         end
         
         %% Difference image detection
@@ -68,6 +251,5 @@ classdef PedestrianDetector < handle
             end
         end
     end
-    
 end
 
