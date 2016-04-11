@@ -29,14 +29,14 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
 
     % Collect data
     
-    currentFrame = readFrame(videoReader);
-    currentFrame = rgb2gray(currentFrame);
+    current_frame = readFrame(videoReader);
+    current_frame = rgb2gray(current_frame);
     
-    currentFrame = histeq(currentFrame);
+    current_frame = pedestrian_detector.adjust_contrast(current_frame);
    
     % Detect pedestrians
    
-    position_measurements = pedestrian_detector.difference_image_detection(currentFrame);
+    position_measurements = pedestrian_detector.difference_image_detection(current_frame);
     
     % Predict position and velocity of pedestrians
     
@@ -70,7 +70,7 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     if (c.DISPLAY_DIFFERENCE_IMAGE)
         imshow(differenceImage);
     else
-        imshow(currentFrame);
+        imshow(current_frame);
     end
     
     hold on;

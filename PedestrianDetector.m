@@ -22,7 +22,9 @@ classdef PedestrianDetector < handle
         
         %% Contrast enhancement
         
-        
+        function current_frame = adjust_contrast(obj, current_frame)
+            current_frame = histeq(current_frame);
+        end
         
         %% Difference image detection
         
