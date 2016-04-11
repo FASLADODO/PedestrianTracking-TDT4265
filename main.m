@@ -34,12 +34,11 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     current_frame = readFrame(videoReader);
     current_frame = rgb2gray(current_frame);
     
-    current_frame = pedestrian_detector.adjust_contrast(current_frame);
+    current_frame = pedestrian_detector.pre_processing(current_frame);
    
     % Detect pedestrians
    
     position_measurements = pedestrian_detector.difference_image_detection(current_frame);
-    position_measurements = pedestrian_detector.kNN_detection(current_frame);
     
     % Predict position and velocity of pedestrians
     

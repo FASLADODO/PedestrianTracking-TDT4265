@@ -5,7 +5,7 @@ function c = get_constants()
     % --------------------------------------
     
     c.TRACKING_SEQUENCE = 'seq_hotel';
-    c.TRACKING_SEQUENCE = 'seq_eth';
+    %c.TRACKING_SEQUENCE = 'seq_eth';
 
     c.TRACKING_START = 30;
     c.TRACKING_DURATION = 5;

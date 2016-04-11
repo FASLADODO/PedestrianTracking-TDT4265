@@ -30,8 +30,12 @@ classdef PedestrianDetector < handle
         
         %% Contrast enhancement
         
-        function current_frame = adjust_contrast(obj, current_frame)
+        function current_frame = pre_processing(obj, current_frame)
+            
+            H = fspecial('gaussian', 20);
+            
             current_frame = histeq(current_frame);
+            current_frame = imfilter(current_frame, H, 'replicate');
         end
         
         %% Classifier training example generation
