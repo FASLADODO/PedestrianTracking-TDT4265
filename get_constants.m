@@ -5,7 +5,7 @@ function c = get_constants()
     % --------------------------------------
     
     c.TRACKING_SEQUENCE = 'seq_hotel';
-    %c.TRACKING_SEQUENCE = 'seq_eth';
+    c.TRACKING_SEQUENCE = 'seq_eth';
 
     c.TRACKING_START = 30;
     c.TRACKING_DURATION = 5;
@@ -28,7 +28,7 @@ function c = get_constants()
     c.ACTIVE                            = 'active';
     
     c.PEDESTRIAN_WIDTH                  = 20;
-    c.PEDESTRIAN_HEIGHT                 = 40;
+    c.PEDESTRIAN_HEIGHT                 = 20;
     c.MEASUREMENT_HISTORY_SIZE          = 5;
     c.EXIT_INITIALIZATION_THRESHOLD     = 3;
     c.INACTIVE_THRESHOLD                = 0;
