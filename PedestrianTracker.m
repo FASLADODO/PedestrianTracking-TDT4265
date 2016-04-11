@@ -94,15 +94,24 @@ classdef PedestrianTracker < handle
         
         function plot_bounding_boxes(obj)
             
+            global c;
+            
             for i = 1:length(obj.pedestrians)
-               obj.pedestrians{i}.plot_bounding_box();
+                
+                if (~(c.DISPLAY_ONLY_ACTIVE_PEDESTRIANS && strcmp(obj.pedestrians{i}.get_state(), c.INITIALIZATION)))
+                    obj.pedestrians{i}.plot_bounding_box();
+                end
             end
         end
         
         function plot_position_histories(obj)
             
+            global c;
+            
             for i = 1:length(obj.pedestrians)
-               obj.pedestrians{i}.plot_position_history();
+                if (~(c.DISPLAY_ONLY_ACTIVE_PEDESTRIANS && strcmp(obj.pedestrians{i}.get_state(), c.INITIALIZATION)))
+                    obj.pedestrians{i}.plot_position_history();
+                end
             end
         end
         

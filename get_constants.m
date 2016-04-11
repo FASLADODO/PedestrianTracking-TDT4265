@@ -5,7 +5,7 @@ function c = get_constants()
     % --------------------------------------
     
     c.TRACKING_SEQUENCE = 'seq_hotel';
-    c.TRACKING_SEQUENCE = 'seq_eth';
+    %c.TRACKING_SEQUENCE = 'seq_eth';
 
     c.TRACKING_START = 30;
     c.TRACKING_DURATION = 5;
@@ -15,6 +15,7 @@ function c = get_constants()
     c.DISPLAY_DIFFERENCE_IMAGE          = false;
     c.DISPLAY_MARKERS                   = true;
     c.DISPLAY_PEDESTRIAN_RECTANGLES     = true;
+    c.DISPLAY_ONLY_ACTIVE_PEDESTRIANS   = true;
     
     % -----------------------------------------------------------
 

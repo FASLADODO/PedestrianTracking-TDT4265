@@ -39,13 +39,21 @@ classdef Pedestrian < handle
         
         %% Misc
         
+        function state = get_state(obj)
+            state = obj.state;
+        end
+        
+        function pos = get_position(obj)
+            pos = obj.position;
+        end
+        
         function update_state(obj)
            
             global c;
             
             if (strcmp(obj.state, c.INITIALIZATION))
             
-                if (obj.get_valid_measurements() > c.EXIT_INITIALIZATION_THRESHOLD)
+                if (obj.get_non_empty_measurement_series() > c.EXIT_INITIALIZATION_THRESHOLD)
                     obj.state = c.ACTIVE;
                 end
             end
@@ -53,7 +61,7 @@ classdef Pedestrian < handle
         
         function inactive = is_inactive(obj)
             
-            if (obj.get_valid_measurements() <= 0)
+            if (obj.get_non_empty_measurement_series() <= 0)
                 inactive = true;
             else
                 inactive = false;
@@ -85,14 +93,14 @@ classdef Pedestrian < handle
         
         % Check how many of the measurements series are nonempty
         
-        function valid_measurements = get_valid_measurements(obj)
+        function non_empty_measurement_series = get_non_empty_measurement_series(obj)
             
-            valid_measurements = 0;
+            non_empty_measurement_series = 0;
                 
             for i = 1:length(obj.measurement_series)
 
                 if (~isempty(obj.measurement_series{i}.positions))
-                    valid_measurements = valid_measurements + 1;
+                    non_empty_measurement_series = non_empty_measurement_series + 1;
                 end
             end
         end
@@ -141,11 +149,7 @@ classdef Pedestrian < handle
         
         %% Plots
         
-        function pos = get_position(obj)
-            pos = obj.position;
-        end
-        
-        function color = get_plot_color(obj)
+        function color = get_state_based_plot_color(obj)
 
             global c;
             
@@ -161,14 +165,14 @@ classdef Pedestrian < handle
             global c;
             
             configuration = [obj.position(1) - (c.PEDESTRIAN_WIDTH / 2), obj.position(2) - (c.PEDESTRIAN_HEIGHT / 2), c.PEDESTRIAN_WIDTH, c.PEDESTRIAN_HEIGHT];
-            color = obj.get_plot_color();
+            color = obj.get_state_based_plot_color();
 
             rectangle('Position', configuration, 'EdgeColor', color);
         end
         
         function plot_position_history(obj)
 
-            color = obj.get_plot_color();
+            color = obj.get_state_based_plot_color();
             
             plot(obj.position_history(1, :), obj.position_history(2, :), color);
         end
