@@ -2,27 +2,26 @@ function c = get_constants()
 
     c = struct();
     
-    % --------------------------------------
+    %% General settings
     
     c.TRACKING_SEQUENCE = 'seq_hotel';
     c.TRACKING_SEQUENCE = 'seq_eth';
 
-    c.TRACKING_START = 35;
+    c.TRACKING_START = 30;
     c.TRACKING_DURATION = 5;
     
-    % -----------------------------------------------------------
+    % Plots
     
     c.DISPLAY_DIFFERENCE_IMAGE          = false;
-    c.DISPLAY_MARKERS                   = true;
+    c.DISPLAY_MEASUREMENTS              = true;
     c.DISPLAY_PEDESTRIAN_RECTANGLES     = true;
     c.DISPLAY_ONLY_ACTIVE_PEDESTRIANS   = false;
     
-    % -----------------------------------------------------------
-    % Detection
+    %% Detection
     
     % Training
     
-    c.TRAINING_IMAGE_FOLDER             = 'training_examples/';
+    c.TRAINING_IMAGE_FOLDER             = ['training_examples_' c.TRACKING_SEQUENCE '/'];
     c.TRAINING_IMAGE_WIDTH              = 40;
     c.TRAINING_IMAGE_HEIGHT             = 40;
     
@@ -38,8 +37,14 @@ function c = get_constants()
     
     c.BLOCK_STEP_SIZE                   = 5;
     
-    % -----------------------------------------------------------
+    c.MEASUREMENT_LABEL_UNKNOWN         = 10;
+    c.MEASUREMENT_LABEL_PEDESTRIAN      = 11;
+    c.MEASUREMENT_LABEL_CLUTTER         = 12;
+    
+    %% Tracking
 
+    % Core
+    
     c.INITIALIZATION                    = 'initialization';
     c.ACTIVE                            = 'active';
     

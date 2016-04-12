@@ -162,21 +162,28 @@ classdef PedestrianDetector < handle
 
             % Train classifiers and store them
 
-            classifier_kNN = fitcknn(X, Y, 'NumNeighbors', 5);
-            classifier_SVM = fitcsvm(X, Y, 'KernelFunction', 'rbf', 'Standardize', true, 'ClassNames', {'0','1'});
+            kNN_classifier = fitcknn(X, Y, 'NumNeighbors', 5);
+            SVM_classifier = fitcsvm(X, Y, 'KernelFunction', 'rbf', 'Standardize', true, 'ClassNames', {'0','1'});
 
-            save('classifier_kNN.mat', 'classifier_kNN');
-            save('classifier_SVM.mat', 'classifier_SVM');
+            save(['kNN_classifier' c.TRACKING_SEQUENCE '.mat'], 'kNN_classifier');
+            save(['SVM_classifier' c.TRACKING_SEQUENCE '.mat'], 'SVM_classifier');
         end
         
         %% kNN classifier detection
+        
+        function kNN_classifier = load_kNN_classifier(obj)
+            
+            global c;
+            
+            kNN_classifier = load(['kNN_classifier' c.TRACKING_SEQUENCE '.mat']);
+            kNN_classifier = kNN_classifier.kNN_classifier;
+        end
         
         function position_measurements = kNN_detection(obj, current_frame)
         
             global c;
             
-            classifier_kNN = load('classifier_kNN.mat');
-            classifier_kNN = classifier_kNN.classifier_kNN;
+            kNN_classifier = obj.load_kNN_classifier();
 
             [image_height, image_width] = size(current_frame);
             
@@ -188,7 +195,7 @@ classdef PedestrianDetector < handle
                 for j = 1:c.BLOCK_STEP_SIZE:(image_height - c.TRAINING_IMAGE_HEIGHT - c.BLOCK_STEP_SIZE)
 
                     block = current_frame(j:(j + c.TRAINING_IMAGE_HEIGHT), i:(i + c.TRAINING_IMAGE_WIDTH));
-                    [label, score] = obj.HOG_predictor(classifier_kNN, block); 
+                    [label, score] = obj.HOG_predictor(kNN_classifier, block);
 
                     if (label == 1 && score(2) >= 1)
                         detection_points(j, i) = 1;
@@ -213,12 +220,64 @@ classdef PedestrianDetector < handle
             end
         end
         
+        function position_measurement_labels = label_position_measurements_with_kNN(obj, current_frame, position_measurements)
+            
+            global c;
+            
+            % Use pretrained kNN classifier
+            
+            kNN_classifier = obj.load_kNN_classifier();
+            
+            % Assume unknown measurement
+    
+            position_measurement_labels = c.MEASUREMENT_LABEL_UNKNOWN * ones(size(position_measurements, 2));
+
+            % Crop out image around each measurement and check against kNN
+            % classifier
+            
+            for i = 1:size(position_measurements, 2)
+
+                x = position_measurements(1, i);
+                y = position_measurements(2, i);
+
+                r_x         = x - (c.TRAINING_IMAGE_WIDTH  / 2);
+                r_y         = y - (c.TRAINING_IMAGE_HEIGHT / 2);
+                r_width     = c.TRAINING_IMAGE_WIDTH - 1;
+                r_height    = c.TRAINING_IMAGE_HEIGHT - 1;
+
+                % Extract training image
+
+                block = imcrop(current_frame, [r_x, r_y, r_width, r_height]);
+
+                [block_height, block_width] = size(block);
+
+                % If image is not big enough, i.e. on the edge or something
+                % just do not care
+                
+                if (block_height ~= c.TRAINING_IMAGE_HEIGHT || block_width ~= c.TRAINING_IMAGE_HEIGHT)
+                    continue;
+                end
+
+                % Determine type of image
+
+                [label, score] = obj.HOG_predictor(kNN_classifier, block);
+
+                pedestrian_score = score(2);
+                clutter_score    = score(1);
+                
+                if (pedestrian_score >= 0.2)
+                    position_measurement_labels(i) = c.MEASUREMENT_LABEL_PEDESTRIAN;
+                elseif (clutter_score >= 0.2)
+                    position_measurement_labels(i) = c.MEASUREMENT_LABEL_CLUTTER;
+                end
+            end
+        end
+        
         %% Difference image detection
         
         function [position_measurements, difference_image] = difference_image_detection(obj, current_frame)
            
             global c;
-            
             
             obj.previous_frame = obj.current_frame;
             obj.current_frame = current_frame;

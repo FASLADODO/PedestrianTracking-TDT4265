@@ -114,7 +114,7 @@ classdef PedestrianTracker < handle
         
         %% Plots
         
-        function has_closed_figure = plot(obj, current_frame, difference_image, position_measurements)
+        function has_closed_figure = plot(obj, current_frame, difference_image, position_measurements, position_measurement_labels)
        
             global c;
             
@@ -127,7 +127,7 @@ classdef PedestrianTracker < handle
             
             has_closed_figure = false;
             
-            % Else show desired plots
+            % Else show desired plots set in the c file
             
             if (c.DISPLAY_DIFFERENCE_IMAGE)
                 imshow(difference_image);
@@ -137,9 +137,12 @@ classdef PedestrianTracker < handle
 
             hold on;
 
-            if (c.DISPLAY_MARKERS)
-                for i = 1:size(position_measurements, 2)
-                    plot(position_measurements(1, i), position_measurements(2, i), 'rx');
+            if (c.DISPLAY_MEASUREMENTS)
+                
+                if (nargin >= 5)
+                    obj.plot_position_measurements_with_labels(position_measurements, position_measurement_labels);
+                else
+                    obj.plot_position_measurements(position_measurements);
                 end
             end
 
@@ -150,6 +153,35 @@ classdef PedestrianTracker < handle
             
             hold off;
         end
+        
+        % Position measurements
+        
+        function plot_position_measurements_with_labels(obj, position_measurements, position_measurement_labels)
+        
+            global c;
+            
+            for i = 1:size(position_measurements, 2)
+                
+                marker_style = 'ro';
+                
+                if (position_measurement_labels(i) == c.MEASUREMENT_LABEL_PEDESTRIAN)
+                    marker_style = 'rd';
+                elseif (position_measurement_labels(i) == c.MEASUREMENT_LABEL_CLUTTER)
+                    marker_style = 'rs';
+                end
+                
+                plot(position_measurements(1, i), position_measurements(2, i), marker_style);
+            end
+        end
+        
+        function plot_position_measurements(obj, position_measurements)
+        
+            for i = 1:size(position_measurements, 2)
+                plot(position_measurements(1, i), position_measurements(2, i), 'rx');
+            end
+        end
+        
+        % Pedestrians
         
         function plot_bounding_boxes(obj)
             
