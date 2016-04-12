@@ -54,7 +54,7 @@ while (video_reader.should_proceed())
     
     % Display tracking results
     
-    has_closed_figure = pedestrian_tracker.plot(current_frame, difference_image, position_measurements, position_measurement_labels);
+    has_closed_figure = pedestrian_tracker.plot(video_reader.get_current_time(), current_frame, difference_image, position_measurements, position_measurement_labels);
     
     if (has_closed_figure)
         break;

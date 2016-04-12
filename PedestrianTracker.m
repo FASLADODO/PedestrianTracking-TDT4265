@@ -114,7 +114,7 @@ classdef PedestrianTracker < handle
         
         %% Plots
         
-        function has_closed_figure = plot(obj, current_frame, difference_image, position_measurements, position_measurement_labels)
+        function has_closed_figure = plot(obj, current_time, current_frame, difference_image, position_measurements, position_measurement_labels)
        
             global c;
             
@@ -136,6 +136,10 @@ classdef PedestrianTracker < handle
             end
 
             hold on;
+            
+            if (c.DISPLAY_TIMESTAMP)
+                obj.plot_timestamp(current_time);
+            end
 
             if (c.DISPLAY_MEASUREMENTS)
                 
@@ -152,6 +156,12 @@ classdef PedestrianTracker < handle
             end
             
             hold off;
+        end
+        
+        % Time
+        
+        function plot_timestamp(obj, current_time)
+            text(20, 20, num2str(current_time), 'Color', 'r', 'FontSize', 18);
         end
         
         % Position measurements

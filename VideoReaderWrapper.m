@@ -36,6 +36,10 @@ classdef VideoReaderWrapper < handle
             frame = readFrame(obj.video_reader);
             frame = rgb2gray(frame);
         end
+        
+        function current_time = get_current_time(obj)
+            current_time = obj.video_reader.CurrentTime; 
+        end
     end 
 end
 
