@@ -235,7 +235,7 @@ classdef PedestrianDetector < handle
             
             % Assume unknown measurement
     
-            position_measurement_labels = c.MEASUREMENT_LABEL_UNKNOWN * ones(size(position_measurements, 2));
+            position_measurement_labels = c.MEASUREMENT_LABEL_UNKNOWN * ones(size(position_measurements, 2), 1);
 
             % Crop out image around each measurement and check against kNN
             % classifier

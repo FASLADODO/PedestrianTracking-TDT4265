@@ -44,8 +44,10 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     
     pedestrian_tracker.inititalize_measurement_series();
     
-    for m = 1:size(position_measurements, 2)
-        pedestrian_tracker.distribute_position_measurement(position_measurements(:, m));
+    valid_position_measurements = position_measurements(:, position_measurement_labels ~= c.MEASUREMENT_LABEL_CLUTTER);
+    
+    for m = 1:size(valid_position_measurements, 2)
+        pedestrian_tracker.distribute_position_measurement(valid_position_measurements(:, m));
     end
     
     % Update pedestrian position and velocity based on sensor measurements

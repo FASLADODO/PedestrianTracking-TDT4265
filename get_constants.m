@@ -15,7 +15,7 @@ function c = get_constants()
     c.DISPLAY_DIFFERENCE_IMAGE          = false;
     c.DISPLAY_MEASUREMENTS              = true;
     c.DISPLAY_PEDESTRIAN_RECTANGLES     = true;
-    c.DISPLAY_ONLY_ACTIVE_PEDESTRIANS   = false;
+    c.DISPLAY_ONLY_ACTIVE_PEDESTRIANS   = true;
     
     %% Detection
     
