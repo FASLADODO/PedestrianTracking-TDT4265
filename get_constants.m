@@ -15,7 +15,7 @@ function c = get_constants()
     c.DISPLAY_DIFFERENCE_IMAGE          = false;
     c.DISPLAY_MARKERS                   = true;
     c.DISPLAY_PEDESTRIAN_RECTANGLES     = true;
-    c.DISPLAY_ONLY_ACTIVE_PEDESTRIANS   = true;
+    c.DISPLAY_ONLY_ACTIVE_PEDESTRIANS   = false;
     
     % -----------------------------------------------------------
     % Detection
@@ -46,8 +46,8 @@ function c = get_constants()
     c.PEDESTRIAN_INTIALIZATION_COLOR    = 'c';
     c.PEDESTRIAN_ACTIVE_COLOR           = 'b';
     
-    c.PEDESTRIAN_WIDTH                  = 20;
-    c.PEDESTRIAN_HEIGHT                 = 20;
+    c.PEDESTRIAN_WIDTH                  = 30;
+    c.PEDESTRIAN_HEIGHT                 = 30;
     c.MEASUREMENT_HISTORY_SIZE          = 10;
     c.EXIT_INITIALIZATION_THRESHOLD     = 6;
     c.INACTIVE_THRESHOLD                = 0;

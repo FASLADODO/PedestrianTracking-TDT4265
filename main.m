@@ -16,7 +16,7 @@ videoReader.CurrentTime = c.TRACKING_START;
 
 %------------------------------------------------
 % Tracker setup
-
+    
 pedestrian_detector = PedestrianDetector();
 pedestrian_tracker = PedestrianTracker();
 

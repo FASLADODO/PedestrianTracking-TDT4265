@@ -47,6 +47,10 @@ classdef Pedestrian < handle
             pos = obj.position;
         end
         
+        function age = get_age(obj)
+            age = size(obj.position_history, 2);
+        end
+        
         function update_state(obj)
            
             global c;
@@ -188,7 +192,7 @@ classdef Pedestrian < handle
             P = obj.covariance;
             
             x = F * x;
-            P = F * P * F';
+            P = F * P * F' + Q;
             
             obj.position = x(1:2);
             obj.velocity = x(3:4);

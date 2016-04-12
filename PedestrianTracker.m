@@ -77,7 +77,7 @@ classdef PedestrianTracker < handle
             % the pedestrian
             
             pedestrian_connected_to_measurement = -1;
-            pedestrian_connection_metric = Inf;
+            best_pedestrian_connection_metric = Inf;
             
             for i = 1:length(obj.pedestrians)
                
@@ -86,8 +86,12 @@ classdef PedestrianTracker < handle
                 
                 if (abs(position_offset(1)) <= (c.PEDESTRIAN_WIDTH / 2)) && (abs(position_offset(2)) <= (c.PEDESTRIAN_HEIGHT / 2))
                     
-                    if (norm(position_offset) < pedestrian_connection_metric)
+                    pedestrian_connection_metric = norm(position_offset) - 0.5 * max(20, obj.pedestrians{i}.get_age());
+                    
+                    if (pedestrian_connection_metric < best_pedestrian_connection_metric)
+                        
                         pedestrian_connected_to_measurement = i;
+                        best_pedestrian_connection_metric = pedestrian_connection_metric;
                     end
                 end
             end
