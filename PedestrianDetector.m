@@ -302,7 +302,7 @@ classdef PedestrianDetector < handle
             
             difference_image = imabsdiff(obj.current_frame, obj.previous_frame);
         
-            structuring_element = strel('disk', 4);
+            structuring_element = strel('disk', c.DIFFERENCE_IMAGE_DISK_RADIUS);
 
             difference_image = im2bw(difference_image, c.DIFFERENCE_IMAGE_THRESHOLD);
             difference_image = imclose(difference_image, structuring_element);
@@ -314,7 +314,7 @@ classdef PedestrianDetector < handle
 
             for i = 1:length(proposed_position_measurement)
 
-                if (proposed_position_measurement(i).Area > c.COMPONENT_AREA_THRESHOLD)
+                if (proposed_position_measurement(i).Area > c.DIFFERENCE_IMAGE_AREA_THRESHOLD)
                     position_measurements(1:2, size(position_measurements, 2) + 1) = proposed_position_measurement(i).Centroid;
                 end
             end

@@ -6,29 +6,20 @@ warning off;
 
 global c; c = get_constants();
 
-%------------------------------------------------
-% Video and display setup
+%% Setup
 
-VIDEO_FILE                  = ['ewap_dataset/' c.TRACKING_SEQUENCE '/' c.TRACKING_SEQUENCE '.avi'];
+video_reader = VideoReaderWrapper();
 
-videoReader = VideoReader(VIDEO_FILE);
-videoReader.CurrentTime = c.TRACKING_START;
-
-%------------------------------------------------
-% Tracker setup
-    
 pedestrian_detector = PedestrianDetector();
 pedestrian_tracker = PedestrianTracker();
 
-%------------------------------------------------
+%% Tracking loop
 
-while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.TRACKING_DURATION))
+while (video_reader.should_proceed())
 
     % Collect data
     
-    current_frame = readFrame(videoReader);
-    current_frame = rgb2gray(current_frame);
-    
+    current_frame = video_reader.read_gray_frame();
     current_frame = pedestrian_detector.pre_processing(current_frame);
    
     % Detect pedestrians
@@ -40,7 +31,7 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     
     pedestrian_tracker.kalman_prediction();
     
-    % Register sensor readings
+    % Register sensor readings with tracker
     
     pedestrian_tracker.inititalize_measurement_series();
     
@@ -69,5 +60,5 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
         break;
     end
    
-    pause(0.05);
+    pause(0.2);
 end

@@ -8,6 +8,9 @@ classdef Pedestrian < handle
         covariance;
         
         state;                  % c.INITIALIZATION | c.ACTIVE
+        confidence;             % How confident is we that this is still
+                                % a track. Function of how long many non
+                                % empty measurements have arrived
         
         measurement_series;     % Keep c.MEASUREMENT_HISTORY_SIZE measurements
                                 % Each entry constists of timestep and
@@ -26,9 +29,10 @@ classdef Pedestrian < handle
             obj.position            = position_measurement;
             obj.position_history    = [];
             obj.velocity            = [0; 0];            
-            obj.covariance          = diag([1 1 5 5]);       % Unsure about speed of target, hence greate variance
+            obj.covariance          = diag([1 1 5 5]);          % Unsure about speed of target, hence greate variance
             
             obj.state               = c.INITIALIZATION;
+            obj.confidence          = 1 / c.MEASUREMENT_HISTORY_SIZE;
             
             obj.measurement_series  = {};
             
@@ -55,12 +59,19 @@ classdef Pedestrian < handle
            
             global c;
             
+            % If enough measurements has arrived, move to ACTIVE
+            
             if (strcmp(obj.state, c.INITIALIZATION))
             
                 if (obj.get_non_empty_measurement_series() > c.EXIT_INITIALIZATION_THRESHOLD)
                     obj.state = c.ACTIVE;
                 end
             end
+
+            % Set how confident we are in this track based on number of
+            % non empty measurement series
+            
+            obj.confidence = obj.get_non_empty_measurement_series() / c.MEASUREMENT_HISTORY_SIZE;
         end
         
         function inactive = is_inactive(obj)
@@ -160,7 +171,11 @@ classdef Pedestrian < handle
             if (strcmp(obj.state, c.INITIALIZATION))
                 color = 'c';
             else
-                color = 'b';
+                if (c.DISPLAY_TRACK_CONFIDENCE)
+                   color = [0 0 obj.confidence];
+                else
+                    color = 'b';
+                end
             end
         end
         
@@ -178,7 +193,7 @@ classdef Pedestrian < handle
 
             color = obj.get_state_based_plot_color();
             
-            plot(obj.position_history(1, :), obj.position_history(2, :), color);
+            plot(obj.position_history(1, :), obj.position_history(2, :), 'Color', color);
         end
         
         %% Kalman filtering

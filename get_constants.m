@@ -5,9 +5,9 @@ function c = get_constants()
     %% General settings
     
     c.TRACKING_SEQUENCE = 'seq_hotel';
-    %c.TRACKING_SEQUENCE = 'seq_eth';
+    c.TRACKING_SEQUENCE = 'seq_eth';
 
-    c.TRACKING_START = 30;
+    c.TRACKING_START = 31;
     c.TRACKING_DURATION = 5;
     
     % Plots
@@ -16,6 +16,7 @@ function c = get_constants()
     c.DISPLAY_MEASUREMENTS              = true;
     c.DISPLAY_PEDESTRIAN_RECTANGLES     = true;
     c.DISPLAY_ONLY_ACTIVE_PEDESTRIANS   = true;
+    c.DISPLAY_TRACK_CONFIDENCE          = true;
     
     %% Detection
     
@@ -31,7 +32,8 @@ function c = get_constants()
     % Difference image
     
     c.DIFFERENCE_IMAGE_THRESHOLD        = 0.1;
-    c.COMPONENT_AREA_THRESHOLD          = 10;
+    c.DIFFERENCE_IMAGE_AREA_THRESHOLD   = 10;
+    c.DIFFERENCE_IMAGE_DISK_RADIUS      = 3;
     
     % Classifiers
     
