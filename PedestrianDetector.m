@@ -237,9 +237,7 @@ classdef PedestrianDetector < handle
     
             position_measurement_labels = c.MEASUREMENT_LABEL_UNKNOWN * ones(size(position_measurements, 2), 1);
 
-            
-            
-            offset_step = 5;
+            offset_step = 3;
             offsets = [ 0   -offset_step    -offset_step    offset_step     offset_step;
                         0   -offset_step    offset_step     -offset_step    offset_step];
                     

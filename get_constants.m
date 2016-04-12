@@ -53,8 +53,14 @@ function c = get_constants()
     c.PEDESTRIAN_INTIALIZATION_COLOR    = 'c';
     c.PEDESTRIAN_ACTIVE_COLOR           = 'b';
     
-    c.PEDESTRIAN_WIDTH                  = 20;
-    c.PEDESTRIAN_HEIGHT                 = 20;
+    if (strcmp(c.TRACKING_SEQUENCE, 'seq_eth'))
+        c.PEDESTRIAN_WIDTH              = 20;
+        c.PEDESTRIAN_HEIGHT             = 20;
+    else
+        c.PEDESTRIAN_WIDTH              = 40;
+        c.PEDESTRIAN_HEIGHT             = 40;
+    end
+    
     c.MEASUREMENT_HISTORY_SIZE          = 10;
     c.EXIT_INITIALIZATION_THRESHOLD     = 6;
     c.INACTIVE_THRESHOLD                = 0;
