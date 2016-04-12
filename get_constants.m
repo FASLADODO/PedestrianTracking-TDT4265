@@ -7,7 +7,7 @@ function c = get_constants()
     c.TRACKING_SEQUENCE = 'seq_hotel';
     c.TRACKING_SEQUENCE = 'seq_eth';
 
-    c.TRACKING_START = 92;
+    c.TRACKING_START = 122;
     c.TRACKING_DURATION = 5;
     
     % Plots
@@ -43,6 +43,8 @@ function c = get_constants()
     c.MEASUREMENT_LABEL_UNKNOWN         = 10;
     c.MEASUREMENT_LABEL_PEDESTRIAN      = 11;
     c.MEASUREMENT_LABEL_CLUTTER         = 12;
+    
+    c.FILTER_OFFSET_STEP                = 3;
     
     %% Tracking
 

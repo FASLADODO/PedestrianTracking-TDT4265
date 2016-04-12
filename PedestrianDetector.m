@@ -184,6 +184,8 @@ classdef PedestrianDetector < handle
             kNN_classifier = kNN_classifier.kNN_classifier;
         end
         
+        % Detection
+        
         function position_measurements = kNN_detection(obj, current_frame)
         
             global c;
@@ -225,6 +227,32 @@ classdef PedestrianDetector < handle
             end
         end
         
+        % Offset matrix generation
+        
+        function [offsets, n_offsets] = get_cross_offsets(obj)
+                
+            global c;
+            
+            offsets = [ 0   -c.FILTER_OFFSET_STEP    -c.FILTER_OFFSET_STEP    c.FILTER_OFFSET_STEP     c.FILTER_OFFSET_STEP;
+                        0   -c.FILTER_OFFSET_STEP    c.FILTER_OFFSET_STEP     -c.FILTER_OFFSET_STEP    c.FILTER_OFFSET_STEP];
+                    
+            n_offsets = size(offsets, 2);
+        end
+        
+        function [offsets, n_offsets] = get_square_offsets(obj)
+            
+            global c;
+            
+            s = c.FILTER_OFFSET_STEP;
+            
+            [offsets_x, offsets_y] = meshgrid(-s:s:s, -s:s:s);
+            offsets = [offsets_x(:)'; offsets_y(:)'];
+            
+            n_offsets = size(offsets, 2);
+        end
+        
+        % Filtering
+            
         function [position_measurements, position_measurement_labels] = filter_measurements_with_kNN(obj, current_frame, position_measurements)
             
             global c;
@@ -237,11 +265,7 @@ classdef PedestrianDetector < handle
     
             position_measurement_labels = c.MEASUREMENT_LABEL_UNKNOWN * ones(size(position_measurements, 2), 1);
 
-            offset_step = 3;
-            offsets = [ 0   -offset_step    -offset_step    offset_step     offset_step;
-                        0   -offset_step    offset_step     -offset_step    offset_step];
-                    
-            n_offsets = size(offsets, 2);
+            [offsets, n_offsets] = obj.get_cross_offsets();
                     
             % Crop out image around each measurement and check against kNN
             % classifier
