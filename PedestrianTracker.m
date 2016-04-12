@@ -6,6 +6,8 @@ classdef PedestrianTracker < handle
         
         pedestrians;
         pedestrian_motion_model;
+        
+        figure_handle;
     end
     
     methods
@@ -18,6 +20,8 @@ classdef PedestrianTracker < handle
             
             obj.pedestrians = {};
             obj.pedestrian_motion_model = PedestrianMotionModel();
+            
+            obj.figure_handle = figure();
         end
         
         %% Misc
@@ -105,6 +109,43 @@ classdef PedestrianTracker < handle
         end
         
         %% Plots
+        
+        function has_closed_figure = plot(obj, current_frame, difference_image, position_measurements)
+       
+            global c;
+            
+            % If the user has closed the figure window, exit
+            
+            if (~ishandle(obj.figure_handle))
+                has_closed_figure = true;
+                return;
+            end
+            
+            has_closed_figure = false;
+            
+            % Else show desired plots
+            
+            if (c.DISPLAY_DIFFERENCE_IMAGE)
+                imshow(difference_image);
+            else
+                imshow(current_frame);
+            end
+
+            hold on;
+
+            if (c.DISPLAY_MARKERS)
+                for i = 1:size(position_measurements, 2)
+                    plot(position_measurements(1, i), position_measurements(2, i), 'rx');
+                end
+            end
+
+            if (c.DISPLAY_PEDESTRIAN_RECTANGLES)
+                obj.plot_bounding_boxes();
+                obj.plot_position_histories();
+            end
+            
+            hold off;
+        end
         
         function plot_bounding_boxes(obj)
             

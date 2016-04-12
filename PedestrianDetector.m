@@ -215,9 +215,10 @@ classdef PedestrianDetector < handle
         
         %% Difference image detection
         
-        function [position_measurements] = difference_image_detection(obj, current_frame)
+        function [position_measurements, difference_image] = difference_image_detection(obj, current_frame)
            
             global c;
+            
             
             obj.previous_frame = obj.current_frame;
             obj.current_frame = current_frame;
@@ -228,6 +229,7 @@ classdef PedestrianDetector < handle
                 
                 obj.has_previous_frame = true;
                 position_measurements = [];
+                difference_image = [];
                 
                 return;
             end
@@ -235,9 +237,8 @@ classdef PedestrianDetector < handle
             % Compute difference image
             
             difference_image = imabsdiff(obj.current_frame, obj.previous_frame);
-
-            structuring_element = [1 1 1 1 1 1 1 1 1]';
-            structuring_element = repmat(structuring_element, 2, 2);
+        
+            structuring_element = strel('disk', 4);
 
             difference_image = im2bw(difference_image, c.DIFFERENCE_IMAGE_THRESHOLD);
             difference_image = imclose(difference_image, structuring_element);

@@ -14,11 +14,6 @@ VIDEO_FILE                  = ['ewap_dataset/' c.TRACKING_SEQUENCE '/' c.TRACKIN
 videoReader = VideoReader(VIDEO_FILE);
 videoReader.CurrentTime = c.TRACKING_START;
 
-hasReadFirstFrame = false;
-previousFrameGray = [];
-
-figureHandle = figure(1);
-
 %------------------------------------------------
 % Tracker setup
 
@@ -38,7 +33,7 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
    
     % Detect pedestrians
    
-    position_measurements = pedestrian_detector.difference_image_detection(current_frame);
+    [position_measurements, difference_image] = pedestrian_detector.difference_image_detection(current_frame);
     
     % Predict position and velocity of pedestrians
     
@@ -65,29 +60,11 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     
     % Display tracking results
     
-    if (~ishandle(figureHandle))
+    has_closed_figure = pedestrian_tracker.plot(current_frame, difference_image, position_measurements);
+    
+    if (has_closed_figure)
         break;
     end
-    
-    if (c.DISPLAY_DIFFERENCE_IMAGE)
-        imshow(difference_image);
-    else
-        imshow(current_frame);
-    end
-    
-    hold on;
-    
-    if (c.DISPLAY_MARKERS)
-        for i = 1:size(position_measurements, 2)
-            plot(position_measurements(1, i), position_measurements(2, i), 'rx');
-        end
-    end
-    
-    if (c.DISPLAY_PEDESTRIAN_RECTANGLES)
-        pedestrian_tracker.plot_bounding_boxes();
-        pedestrian_tracker.plot_position_histories();
-    end
    
-    hold off;
     pause(0.05);
 end
