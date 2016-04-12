@@ -69,6 +69,11 @@ classdef PedestrianTracker < handle
             global c;
             
             % Search for connection between pedestrian and measurement
+            % I.e. if the measurement falls into the box that defines the
+            % the pedestrian
+            
+            pedestrian_connected_to_measurement = -1;
+            pedestrian_connection_metric = Inf;
             
             for i = 1:length(obj.pedestrians)
                
@@ -77,17 +82,26 @@ classdef PedestrianTracker < handle
                 
                 if (abs(position_offset(1)) <= (c.PEDESTRIAN_WIDTH / 2)) && (abs(position_offset(2)) <= (c.PEDESTRIAN_HEIGHT / 2))
                     
-                    obj.pedestrians{i}.add_position_measurement(position_measurement);
-                    
-                    return;
+                    if (norm(position_offset) < pedestrian_connection_metric)
+                        pedestrian_connected_to_measurement = i;
+                    end
                 end
             end
             
+            % Assign the measurement to the pedestrian which is predicted
+            % to be closest to the measurement
+            
+            if (pedestrian_connected_to_measurement > 0)
+                
+                obj.pedestrians{pedestrian_connected_to_measurement}.add_position_measurement(position_measurement);
+            
             % If no connection was found initialize a new pedestrian
             
-            index = length(obj.pedestrians) + 1;
+            else
+                index = length(obj.pedestrians) + 1;
 
-            obj.pedestrians{index} = Pedestrian(position_measurement, obj.timestep);
+                obj.pedestrians{index} = Pedestrian(position_measurement, obj.timestep);
+            end
         end
         
         %% Plots

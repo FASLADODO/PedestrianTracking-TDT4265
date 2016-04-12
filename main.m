@@ -70,7 +70,7 @@ while (hasFrame(videoReader) && (videoReader.CurrentTime < c.TRACKING_START + c.
     end
     
     if (c.DISPLAY_DIFFERENCE_IMAGE)
-        imshow(differenceImage);
+        imshow(difference_image);
     else
         imshow(current_frame);
     end
