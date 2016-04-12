@@ -7,7 +7,7 @@ function c = get_constants()
     c.TRACKING_SEQUENCE = 'seq_hotel';
     c.TRACKING_SEQUENCE = 'seq_eth';
 
-    c.TRACKING_START = 31;
+    c.TRACKING_START = 32;
     c.TRACKING_DURATION = 5;
     
     % Plots
@@ -53,10 +53,11 @@ function c = get_constants()
     c.PEDESTRIAN_INTIALIZATION_COLOR    = 'c';
     c.PEDESTRIAN_ACTIVE_COLOR           = 'b';
     
-    c.PEDESTRIAN_WIDTH                  = 30;
-    c.PEDESTRIAN_HEIGHT                 = 30;
+    c.PEDESTRIAN_WIDTH                  = 20;
+    c.PEDESTRIAN_HEIGHT                 = 20;
     c.MEASUREMENT_HISTORY_SIZE          = 10;
     c.EXIT_INITIALIZATION_THRESHOLD     = 6;
     c.INACTIVE_THRESHOLD                = 0;
+    c.PEDESTRIAN_FILTER_THRESHOLD       = 0.2;
 end
 

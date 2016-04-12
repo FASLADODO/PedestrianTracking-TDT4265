@@ -24,8 +24,8 @@ while (video_reader.should_proceed())
    
     % Detect pedestrians
    
-    [position_measurements, difference_image] = pedestrian_detector.difference_image_detection(current_frame);
-    [position_measurement_labels]             = pedestrian_detector.label_position_measurements_with_kNN(current_frame, position_measurements);
+    [position_measurements, difference_image]               = pedestrian_detector.difference_image_detection(current_frame);
+    [position_measurements, position_measurement_labels]    = pedestrian_detector.filter_measurements_with_kNN(current_frame, position_measurements);
     
     % Predict position and velocity of pedestrians
     
@@ -59,6 +59,7 @@ while (video_reader.should_proceed())
     if (has_closed_figure)
         break;
     end
-   
+    
+    
     pause(0.2);
 end

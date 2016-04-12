@@ -225,7 +225,7 @@ classdef PedestrianDetector < handle
             end
         end
         
-        function position_measurement_labels = label_position_measurements_with_kNN(obj, current_frame, position_measurements)
+        function [position_measurements, position_measurement_labels] = filter_measurements_with_kNN(obj, current_frame, position_measurements)
             
             global c;
             
@@ -237,6 +237,14 @@ classdef PedestrianDetector < handle
     
             position_measurement_labels = c.MEASUREMENT_LABEL_UNKNOWN * ones(size(position_measurements, 2), 1);
 
+            
+            
+            offset_step = 5;
+            offsets = [ 0   -offset_step    -offset_step    offset_step     offset_step;
+                        0   -offset_step    offset_step     -offset_step    offset_step];
+                    
+            n_offsets = size(offsets, 2);
+                    
             % Crop out image around each measurement and check against kNN
             % classifier
             
@@ -250,29 +258,69 @@ classdef PedestrianDetector < handle
                 r_width     = c.TRAINING_IMAGE_WIDTH - 1;
                 r_height    = c.TRAINING_IMAGE_HEIGHT - 1;
 
-                % Extract training image
-
-                block = imcrop(current_frame, [r_x, r_y, r_width, r_height]);
-
-                [block_height, block_width] = size(block);
-
-                % If image is not big enough, i.e. on the edge or something
-                % just do not care
+                % Scan around measurement to find best match for pedestrian
                 
-                if (block_height ~= c.TRAINING_IMAGE_HEIGHT || block_width ~= c.TRAINING_IMAGE_HEIGHT)
-                    continue;
+                pedestrian_scores = nan(n_offsets, 1);
+                
+                for j = 1:n_offsets
+                    
+                    % Extract shifted image
+                    
+                    offset = offsets(:, j);
+                    
+                    block = imcrop(current_frame, [r_x + offset(1), r_y + offset(2), r_width, r_height]);
+
+                    % If image is not big enough, i.e. on the edge or something
+                    % just do not care
+                    
+                    [block_height, block_width] = size(block);
+
+                    if (block_height ~= c.TRAINING_IMAGE_HEIGHT || block_width ~= c.TRAINING_IMAGE_HEIGHT)
+                        continue;
+                    end
+
+                    % Determine if this looks more like a pedestrian than
+                    % previously best
+
+                    [label, score] = obj.HOG_predictor(kNN_classifier, block);
+                    pedestrian_scores(j) = score(2);
                 end
 
-                % Determine type of image
-
-                [label, score] = obj.HOG_predictor(kNN_classifier, block);
-
-                pedestrian_score = score(2);
-                clutter_score    = score(1);
+                % No valid scores were found
                 
-                if (pedestrian_score >= 0.2)
+                if (isnan(pedestrian_scores))
+                    continue;
+                end
+                
+                % Evaluate type of measurement
+                
+                max_pedestrian_score = max(pedestrian_scores);
+                
+                if (max_pedestrian_score >= c.PEDESTRIAN_FILTER_THRESHOLD)
+                    
+                    % Create new measurement for all of the detections that
+                    % were max. I.e. if one single measurement were from
+                    % two one might expect it to detect someone clearly on
+                    % either side.
+                    
+                    offset_indices = find(pedestrian_scores == max_pedestrian_score);
+                    
+                    % Modify original measurement
+                    
                     position_measurement_labels(i) = c.MEASUREMENT_LABEL_PEDESTRIAN;
-                elseif (clutter_score >= 0.2)
+                    position_measurements(:, i) = position_measurements(:, i) + offsets(:, offset_indices(1));
+                    
+                    % Add the newly created ones if there were any
+                    
+                    for z = 2:length(offset_indices)
+                        
+                        index = length(position_measurement_labels) + 1;
+                        
+                        position_measurement_labels(index) = c.MEASUREMENT_LABEL_PEDESTRIAN;
+                        position_measurements(:, index) = position_measurements(:, i) + offsets(:, offset_indices(z));
+                    end
+                    
+                elseif (max_pedestrian_score >= 0)
                     position_measurement_labels(i) = c.MEASUREMENT_LABEL_CLUTTER;
                 end
             end
