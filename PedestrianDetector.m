@@ -125,6 +125,11 @@ classdef PedestrianDetector < handle
 
             directory = dir(c.TRAINING_IMAGE_FOLDER);
             number_of_training_images = length(directory(not([directory.isdir])));
+            
+            if (number_of_training_images <= 0)
+                disp('No training data was found.');
+                return;
+            end
 
             X = nan(number_of_training_images, 576);
             Y = nan(number_of_training_images, 1);
@@ -165,8 +170,8 @@ classdef PedestrianDetector < handle
             kNN_classifier = fitcknn(X, Y, 'NumNeighbors', 5);
             SVM_classifier = fitcsvm(X, Y, 'KernelFunction', 'rbf', 'Standardize', true, 'ClassNames', {'0','1'});
 
-            save(['kNN_classifier' c.TRACKING_SEQUENCE '.mat'], 'kNN_classifier');
-            save(['SVM_classifier' c.TRACKING_SEQUENCE '.mat'], 'SVM_classifier');
+            save(['kNN_classifier_' c.TRACKING_SEQUENCE '.mat'], 'kNN_classifier');
+            save(['SVM_classifier_' c.TRACKING_SEQUENCE '.mat'], 'SVM_classifier');
         end
         
         %% kNN classifier detection
@@ -175,7 +180,7 @@ classdef PedestrianDetector < handle
             
             global c;
             
-            kNN_classifier = load(['kNN_classifier' c.TRACKING_SEQUENCE '.mat']);
+            kNN_classifier = load(['kNN_classifier_' c.TRACKING_SEQUENCE '.mat']);
             kNN_classifier = kNN_classifier.kNN_classifier;
         end
         

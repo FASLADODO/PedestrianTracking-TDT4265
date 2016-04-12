@@ -5,7 +5,7 @@ function c = get_constants()
     %% General settings
     
     c.TRACKING_SEQUENCE = 'seq_hotel';
-    c.TRACKING_SEQUENCE = 'seq_eth';
+    %c.TRACKING_SEQUENCE = 'seq_eth';
 
     c.TRACKING_START = 30;
     c.TRACKING_DURATION = 5;
@@ -25,8 +25,8 @@ function c = get_constants()
     c.TRAINING_IMAGE_WIDTH              = 40;
     c.TRAINING_IMAGE_HEIGHT             = 40;
     
-    c.TRAINING_CATEGORY                 = 0;
-    c.TRAINING_TIMESTEPS                = 140:160;
+    c.TRAINING_CATEGORY                 = 1;
+    c.TRAINING_TIMESTEPS                = 120:140;
     
     % Difference image
     
