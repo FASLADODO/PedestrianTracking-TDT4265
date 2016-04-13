@@ -255,6 +255,13 @@ classdef PedestrianDetector < handle
             
             global c;
             
+            % Option of not using filter
+            
+            if (c.DISABLE_FILTER)
+                position_measurement_labels = c.MEASUREMENT_LABEL_UNKNOWN * ones(size(position_measurements, 2), 1);
+                return;
+            end
+            
             % Use pretrained kNN classifier
             
             kNN_classifier = obj.load_kNN_classifier();

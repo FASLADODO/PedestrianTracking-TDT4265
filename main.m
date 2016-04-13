@@ -60,6 +60,5 @@ while (video_reader.should_proceed())
         break;
     end
     
-    
     pause(0.2);
 end

@@ -28,7 +28,7 @@ function c = get_constants()
     c.TRAINING_IMAGE_HEIGHT             = 40;
     
     c.TRAINING_CATEGORY                 = 0;
-    c.TRAINING_TIMESTEPS                = 120:140;
+    c.TRAINING_TIMESTEPS                = linspace(140, 145, 20);
     
     % Difference image
     
@@ -44,6 +44,7 @@ function c = get_constants()
     c.MEASUREMENT_LABEL_PEDESTRIAN      = 11;
     c.MEASUREMENT_LABEL_CLUTTER         = 12;
     
+    c.DISABLE_FILTER                    = false;
     c.FILTER_OFFSET_STEP                = 3;
     
     %% Tracking
