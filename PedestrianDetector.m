@@ -165,7 +165,7 @@ classdef PedestrianDetector < handle
 
             % Train classifiers and store them
 
-            kNN_classifier = fitcknn(X, Y, 'NumNeighbors', 5);
+            kNN_classifier = fitcknn(X, Y, 'NumNeighbors', c.NEAREST_NEIGHBOUR_K);
             SVM_classifier = fitcsvm(X, Y, 'KernelFunction', 'rbf', 'Standardize', true, 'ClassNames', {'0','1'});
 
             save(['kNN_classifier_' c.TRACKING_SEQUENCE '.mat'], 'kNN_classifier');
@@ -231,8 +231,10 @@ classdef PedestrianDetector < handle
                 
             global c;
             
-            offsets = [ 0   -c.FILTER_OFFSET_STEP    -c.FILTER_OFFSET_STEP    c.FILTER_OFFSET_STEP     c.FILTER_OFFSET_STEP;
-                        0   -c.FILTER_OFFSET_STEP    c.FILTER_OFFSET_STEP     -c.FILTER_OFFSET_STEP    c.FILTER_OFFSET_STEP];
+            s = c.CLASSIFIER_FILTER_OFFSET_STEP;
+            
+            offsets = [ 0   -s    -s    s     s;
+                        0   -s    s     -s    s];
                     
             n_offsets = size(offsets, 2);
         end
@@ -241,7 +243,7 @@ classdef PedestrianDetector < handle
             
             global c;
             
-            s = c.FILTER_OFFSET_STEP;
+            s = c.CLASSIFIER_FILTER_OFFSET_STEP;
             
             [offsets_x, offsets_y] = meshgrid(-s:s:s, -s:s:s);
             offsets = [offsets_x(:)'; offsets_y(:)'];
@@ -257,7 +259,7 @@ classdef PedestrianDetector < handle
             
             % Option of not using filter
             
-            if (c.DISABLE_FILTER)
+            if (c.DISABLE_CLASSIFIER_FILTER)
                 position_measurement_labels = c.MEASUREMENT_LABEL_UNKNOWN * ones(size(position_measurements, 2), 1);
                 return;
             end

@@ -5,7 +5,7 @@ function c = get_constants()
     %% General settings
     
     c.TRACKING_SEQUENCE = 'seq_hotel';
-    %c.TRACKING_SEQUENCE = 'seq_eth';
+    c.TRACKING_SEQUENCE = 'seq_eth';
 
     c.TRACKING_START = 142;
     c.TRACKING_DURATION = 5;
@@ -30,6 +30,8 @@ function c = get_constants()
     c.TRAINING_CATEGORY                 = 0;
     c.TRAINING_TIMESTEPS                = linspace(140, 145, 20);
     
+    c.NEAREST_NEIGHBOUR_K               = 10;
+    
     % Difference image
     
     c.DIFFERENCE_IMAGE_THRESHOLD        = 0.1;
@@ -44,8 +46,8 @@ function c = get_constants()
     c.MEASUREMENT_LABEL_PEDESTRIAN      = 11;
     c.MEASUREMENT_LABEL_CLUTTER         = 12;
     
-    c.DISABLE_FILTER                    = false;
-    c.FILTER_OFFSET_STEP                = 3;
+    c.DISABLE_CLASSIFIER_FILTER         = false;
+    c.CLASSIFIER_FILTER_OFFSET_STEP     = 3;
     
     %% Tracking
 
