@@ -68,7 +68,7 @@ classdef PedestrianTracker < handle
             end
         end
         
-        function distribute_position_measurement(obj, position_measurement)
+        function distribute_position_measurement(obj, position_measurement, position_measurement_label)
             
             global c;
             
@@ -101,14 +101,14 @@ classdef PedestrianTracker < handle
             
             if (pedestrian_connected_to_measurement > 0)
                 
-                obj.pedestrians{pedestrian_connected_to_measurement}.add_position_measurement(position_measurement);
+                obj.pedestrians{pedestrian_connected_to_measurement}.add_position_measurement(position_measurement, position_measurement_label);
             
             % If no connection was found initialize a new pedestrian
             
             else
                 index = length(obj.pedestrians) + 1;
 
-                obj.pedestrians{index} = Pedestrian(position_measurement, obj.timestep);
+                obj.pedestrians{index} = Pedestrian(position_measurement, position_measurement_label, obj.timestep);
             end
         end
         

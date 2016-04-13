@@ -15,6 +15,7 @@ classdef Pedestrian < handle
         measurement_series;     % Keep c.MEASUREMENT_HISTORY_SIZE measurements
                                 % Each entry constists of timestep and
                                 % and array of position measurements
+                                % and label of position measurements
                                 % belonging to this pedestrian
     end
     
@@ -22,7 +23,7 @@ classdef Pedestrian < handle
         
         %% Constructor
         
-        function obj = Pedestrian(position_measurement, timestep)
+        function obj = Pedestrian(position_measurement, position_measurement_label, timestep)
             
             global c;
             
@@ -39,6 +40,7 @@ classdef Pedestrian < handle
             obj.measurement_series{1}           = struct();
             obj.measurement_series{1}.timestep  = timestep;
             obj.measurement_series{1}.positions = position_measurement;
+            obj.measurement_series{1}.labels    = position_measurement_label;
         end
         
         %% Misc
@@ -101,9 +103,10 @@ classdef Pedestrian < handle
             
             index = length(obj.measurement_series) + 1;
             
-            obj.measurement_series{index} = struct();
-            obj.measurement_series{index}.timestep = timestep;
+            obj.measurement_series{index}           = struct();
+            obj.measurement_series{index}.timestep  = timestep;
             obj.measurement_series{index}.positions = [];
+            obj.measurement_series{index}.labels    = [];
         end
         
         % Check how many of the measurements series are nonempty
@@ -123,12 +126,13 @@ classdef Pedestrian < handle
         % Adds a new position measurement to the current time series
         % I.e. the entry which is in the last entry
         
-        function add_position_measurement(obj, position_measurement)
+        function add_position_measurement(obj, position_measurement, position_measurement_label)
             
             index = length(obj.measurement_series);
             n = size(obj.measurement_series{index}.positions, 2);
             
             obj.measurement_series{index}.positions(:, n + 1) = position_measurement;
+            obj.measurement_series{index}.labels(n + 1)       = position_measurement_label;
         end
         
         % Retrieve the position measurement from the last timestep which
@@ -162,6 +166,28 @@ classdef Pedestrian < handle
             end
         end
         
+        % If all measurements are of type c.MEASUREMENT_LABEL_UNKNOWN, i.e.
+        % that the track has only been at the edge of the frame for
+        % instance
+        
+        function only_unknown_measurements = has_only_unknown_measurements(obj)
+           
+            global c;
+            
+            for i = 1:length(obj.measurement_series)
+               
+                labels = obj.measurement_series{i}.labels;
+                n = length(labels);
+                
+                if (sum(labels == c.MEASUREMENT_LABEL_UNKNOWN) ~= n)
+                    only_unknown_measurements = false;
+                    return;
+                end
+            end
+            
+            only_unknown_measurements = true;
+        end
+        
         %% Plots
         
         function color = get_state_based_plot_color(obj)
@@ -171,7 +197,9 @@ classdef Pedestrian < handle
             if (strcmp(obj.state, c.INITIALIZATION))
                 color = 'c';
             else
-                if (c.DISPLAY_TRACK_CONFIDENCE)
+                if (obj.has_only_unknown_measurements())
+                    color = 'y';
+                elseif (c.DISPLAY_TRACK_CONFIDENCE)
                    color = [0 0 obj.confidence];
                 else
                     color = 'b';

@@ -7,7 +7,7 @@ function c = get_constants()
     c.TRACKING_SEQUENCE = 'seq_hotel';
     c.TRACKING_SEQUENCE = 'seq_eth';
 
-    c.TRACKING_START = 142;
+    c.TRACKING_START = 35;
     c.TRACKING_DURATION = 5;
     
     % Plots

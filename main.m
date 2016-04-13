@@ -35,10 +35,15 @@ while (video_reader.should_proceed())
     
     pedestrian_tracker.inititalize_measurement_series();
     
-    valid_position_measurements = position_measurements(:, position_measurement_labels ~= c.MEASUREMENT_LABEL_CLUTTER);
+    valid_position_measurements         = position_measurements(:, position_measurement_labels ~= c.MEASUREMENT_LABEL_CLUTTER);
+    valid_position_measurement_labels   = position_measurement_labels(position_measurement_labels ~= c.MEASUREMENT_LABEL_CLUTTER);
     
     for m = 1:size(valid_position_measurements, 2)
-        pedestrian_tracker.distribute_position_measurement(valid_position_measurements(:, m));
+        
+        position_measurement        = valid_position_measurements(:, m);
+        position_measurement_label  = valid_position_measurement_labels(m);
+        
+        pedestrian_tracker.distribute_position_measurement(position_measurement, position_measurement_label);
     end
     
     % Update pedestrian position and velocity based on sensor measurements
