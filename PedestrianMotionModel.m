@@ -37,8 +37,8 @@ classdef PedestrianMotionModel
             obj.H = [   1   0   0               0;
                         0   1   0               0];
 
-            obj.Q = 0.01 * diag([  3   3   5  5]);
-            obj.R = 1    * diag([  2   2]);
+            obj.Q = 0.005 * diag([  3   3   5  5]);
+            obj.R = 5    * diag([  2   2]);
         end
     end
     

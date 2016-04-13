@@ -7,7 +7,7 @@ function c = get_constants()
     c.TRACKING_SEQUENCE = 'seq_hotel';
     c.TRACKING_SEQUENCE = 'seq_eth';
 
-    c.TRACKING_START = 35;
+    c.TRACKING_START = 55;
     c.TRACKING_DURATION = 5;
     
     % Plots
@@ -28,9 +28,9 @@ function c = get_constants()
     c.TRAINING_IMAGE_HEIGHT             = 40;
     
     c.TRAINING_CATEGORY                 = 0;
-    c.TRAINING_TIMESTEPS                = linspace(140, 145, 20);
+    c.TRAINING_TIMESTEPS                = linspace(35, 36, 20);
     
-    c.NEAREST_NEIGHBOUR_K               = 10;
+    c.NEAREST_NEIGHBOUR_K               = 5;
     
     % Difference image
     
@@ -47,7 +47,12 @@ function c = get_constants()
     c.MEASUREMENT_LABEL_CLUTTER         = 12;
     
     c.DISABLE_CLASSIFIER_FILTER         = false;
-    c.CLASSIFIER_FILTER_OFFSET_STEP     = 3;
+    
+    if (strcmp(c.TRACKING_SEQUENCE, 'seq_eth'))
+        c.CLASSIFIER_FILTER_OFFSET_STEP = 3;
+    else
+        c.CLASSIFIER_FILTER_OFFSET_STEP = 5;
+    end
     
     %% Tracking
 
@@ -63,8 +68,8 @@ function c = get_constants()
         c.PEDESTRIAN_WIDTH              = 20;
         c.PEDESTRIAN_HEIGHT             = 20;
     else
-        c.PEDESTRIAN_WIDTH              = 50;
-        c.PEDESTRIAN_HEIGHT             = 50;
+        c.PEDESTRIAN_WIDTH              = 60;
+        c.PEDESTRIAN_HEIGHT             = 60;
     end
     
     c.MEASUREMENT_HISTORY_SIZE          = 10;

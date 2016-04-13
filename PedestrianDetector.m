@@ -77,6 +77,10 @@ classdef PedestrianDetector < handle
                 video_reader.set_current_time(timestep);
 
                 frame = video_reader.read_gray_frame();
+                
+                % Use same pre processing as when doing tracking
+                    
+                frame = obj.pre_processing(frame);
 
                 % Let user pick a point on the image
 
