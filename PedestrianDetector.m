@@ -42,12 +42,11 @@ classdef PedestrianDetector < handle
         
         function classifier_training_example_generation(obj)
             
-            c = get_constants();
+            global c;
             
             % Setup
             
-            VIDEO_FILE_NAME  = ['ewap_dataset/' c.TRACKING_SEQUENCE '/' c.TRACKING_SEQUENCE '.avi'];
-            videoReader = VideoReader(VIDEO_FILE_NAME);
+            video_reader = VideoReaderWrapper();
             
             % Find out how many previously added images there are and begin to count from there
 
@@ -74,11 +73,10 @@ classdef PedestrianDetector < handle
             for i = 1:length(c.TRAINING_TIMESTEPS)
     
                 timestep = c.TRAINING_TIMESTEPS(i);
+                
+                video_reader.set_current_time(timestep);
 
-                videoReader.CurrentTime = timestep;
-
-                frame = readFrame(videoReader);
-                frame = rgb2gray(frame);
+                frame = video_reader.read_gray_frame();
 
                 % Let user pick a point on the image
 
@@ -119,7 +117,7 @@ classdef PedestrianDetector < handle
         
         function classifier_training(obj)
             
-            c = get_constants();
+            global c;
             
             % Setup training matrices
 

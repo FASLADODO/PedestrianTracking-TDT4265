@@ -5,9 +5,9 @@ function c = get_constants()
     %% General settings
     
     c.TRACKING_SEQUENCE = 'seq_hotel';
-    c.TRACKING_SEQUENCE = 'seq_eth';
+    %c.TRACKING_SEQUENCE = 'seq_eth';
 
-    c.TRACKING_START = 122;
+    c.TRACKING_START = 142;
     c.TRACKING_DURATION = 5;
     
     % Plots
@@ -27,7 +27,7 @@ function c = get_constants()
     c.TRAINING_IMAGE_WIDTH              = 40;
     c.TRAINING_IMAGE_HEIGHT             = 40;
     
-    c.TRAINING_CATEGORY                 = 1;
+    c.TRAINING_CATEGORY                 = 0;
     c.TRAINING_TIMESTEPS                = 120:140;
     
     % Difference image
@@ -60,8 +60,8 @@ function c = get_constants()
         c.PEDESTRIAN_WIDTH              = 20;
         c.PEDESTRIAN_HEIGHT             = 20;
     else
-        c.PEDESTRIAN_WIDTH              = 40;
-        c.PEDESTRIAN_HEIGHT             = 40;
+        c.PEDESTRIAN_WIDTH              = 50;
+        c.PEDESTRIAN_HEIGHT             = 50;
     end
     
     c.MEASUREMENT_HISTORY_SIZE          = 10;
