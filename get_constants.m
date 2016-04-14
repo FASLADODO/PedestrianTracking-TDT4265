@@ -22,7 +22,7 @@ function c = get_constants()
     %% Result
     
     c.STORE_TRACKING_RESULT             = false;
-    c.TRACKING_RESULT_OUTPUT_FILE       = 'tracking_result_1.avi';
+    c.TRACKING_RESULT_OUTPUT_FILE       = 'results/tracking_result_1.avi';
     
     %% Detection
     
