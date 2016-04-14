@@ -11,6 +11,7 @@ classdef Pedestrian_motion_model
             
         Q;
         R;
+        P_0;
     end
     
     methods
@@ -37,8 +38,9 @@ classdef Pedestrian_motion_model
             obj.H = [   1   0   0               0;
                         0   1   0               0];
 
-            obj.Q = 0.005 * diag([  3   3   5  5]);
-            obj.R = 5    * diag([  2   2]);
+            obj.Q   = 0.005 * diag([  3   3   5  5]);
+            obj.R   = 5    * diag([  2   2]);
+            obj.P_0 = diag([1 1 5 5]);                          % Unsure about speed of target, hence greate variance
         end
     end
     

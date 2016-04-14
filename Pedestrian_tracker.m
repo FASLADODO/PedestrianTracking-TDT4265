@@ -108,7 +108,7 @@ classdef Pedestrian_tracker < handle
             else
                 index = length(obj.pedestrians) + 1;
 
-                obj.pedestrians{index} = Pedestrian(position_measurement, position_measurement_label, obj.timestep);
+                obj.pedestrians{index} = Pedestrian(position_measurement, position_measurement_label, obj.pedestrian_motion_model, obj.timestep);
             end
         end
         

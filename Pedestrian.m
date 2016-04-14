@@ -23,14 +23,14 @@ classdef Pedestrian < handle
         
         %% Constructor
         
-        function obj = Pedestrian(position_measurement, position_measurement_label, timestep)
+        function obj = Pedestrian(position_measurement, position_measurement_label, pedestrian_motion_model, timestep)
             
             global c;
             
             obj.position            = position_measurement;
             obj.position_history    = [];
             obj.velocity            = [0; 0];            
-            obj.covariance          = diag([1 1 5 5]);          % Unsure about speed of target, hence greate variance
+            obj.covariance          = pedestrian_motion_model.P_0;
             
             obj.state               = c.INITIALIZATION;
             obj.confidence          = 1 / c.MEASUREMENT_HISTORY_SIZE;
