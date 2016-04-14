@@ -68,6 +68,14 @@ classdef Pedestrian_tracker < handle
             end
         end
         
+        % Cost of connection between measurement and track
+        % Weighted measure between distance and the age of the track
+        % Favors tracks which are consistent
+        
+        function cost = measurement_connection_cost(obj, position_offset, age)
+            cost = norm(position_offset) - 0.5 * max(20, age);
+        end
+        
         function distribute_position_measurement(obj, position_measurement, position_measurement_label)
             
             global c;
@@ -77,7 +85,7 @@ classdef Pedestrian_tracker < handle
             % the pedestrian
             
             pedestrian_connected_to_measurement = -1;
-            best_pedestrian_connection_metric = Inf;
+            best_pedestrian_connection_cost = Inf;
             
             for i = 1:length(obj.pedestrians)
                
@@ -86,12 +94,14 @@ classdef Pedestrian_tracker < handle
                 
                 if (abs(position_offset(1)) <= (c.PEDESTRIAN_WIDTH / 2)) && (abs(position_offset(2)) <= (c.PEDESTRIAN_HEIGHT / 2))
                     
-                    pedestrian_connection_metric = norm(position_offset) - 0.5 * max(20, obj.pedestrians{i}.get_age());
+                    % Cost of connection
                     
-                    if (pedestrian_connection_metric < best_pedestrian_connection_metric)
+                    pedestrian_connection_cost = obj.measurement_connection_cost(position_offset, obj.pedestrians{i}.get_age());
+                    
+                    if (pedestrian_connection_cost < best_pedestrian_connection_cost)
                         
                         pedestrian_connected_to_measurement = i;
-                        best_pedestrian_connection_metric = pedestrian_connection_metric;
+                        best_pedestrian_connection_cost = pedestrian_connection_cost;
                     end
                 end
             end
