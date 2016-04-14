@@ -21,7 +21,7 @@ classdef Video_writer_wrapper < handle
             if (c.STORE_TRACKING_RESULT)
                 
                 obj.output_video = VideoWriter(filename);
-                obj.output_video.FrameRate = frame_rate / 4;
+                obj.output_video.FrameRate = frame_rate;
                 
                 open(obj.output_video);
             else

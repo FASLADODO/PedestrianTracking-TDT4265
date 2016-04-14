@@ -9,7 +9,7 @@ global c; c = get_constants();
 %% Setup
 
 video_reader = Video_reader_wrapper();
-video_writer = Video_writer_wrapper(video_reader.get_frame_rate());
+video_writer = Video_writer_wrapper(video_reader.get_frame_rate() / 4);
 
 pedestrian_detector = Pedestrian_detector();
 pedestrian_tracker = Pedestrian_tracker();

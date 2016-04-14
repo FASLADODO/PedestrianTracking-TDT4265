@@ -84,6 +84,6 @@ function c = get_constants()
     
     c.MEAN                              = 1;
     c.CLOSEST_TO_PREDICTION             = 2;
-    c.KALMAN_UPDATE_MEASUREMENT         = 2;
+    c.KALMAN_UPDATE_MEASUREMENT         = c.MEAN;
 end
 
