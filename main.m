@@ -9,6 +9,7 @@ global c; c = get_constants();
 %% Setup
 
 video_reader = VideoReaderWrapper();
+video_writer = VideoWriterWrapper(video_reader.get_frame_rate());
 
 pedestrian_detector = PedestrianDetector();
 pedestrian_tracker = PedestrianTracker();
@@ -65,5 +66,11 @@ while (video_reader.should_proceed())
         break;
     end
     
-    pause(0.2);
+    % Save output video
+    
+    video_writer.write_frame();
+    
+    pause(0.05);
 end
+
+video_writer.close();

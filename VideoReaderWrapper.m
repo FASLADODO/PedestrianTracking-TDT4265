@@ -16,7 +16,7 @@ classdef VideoReaderWrapper < handle
             
             global c;
             
-            filename = ['ewap_dataset/' c.TRACKING_SEQUENCE '/' c.TRACKING_SEQUENCE '.avi'];
+            filename = fullfile('ewap_dataset', c.TRACKING_SEQUENCE, [c.TRACKING_SEQUENCE '.avi']);
             
             obj.video_reader = VideoReader(filename);
             obj.video_reader .CurrentTime = c.TRACKING_START;
@@ -29,6 +29,10 @@ classdef VideoReaderWrapper < handle
             global c;
             
             proceed = hasFrame(obj.video_reader) && (obj.video_reader.CurrentTime < c.TRACKING_START + c.TRACKING_DURATION);
+        end
+        
+        function frame_rate = get_frame_rate(obj)
+            frame_rate = obj.video_reader.FrameRate;
         end
         
         function frame = read_gray_frame(obj)
