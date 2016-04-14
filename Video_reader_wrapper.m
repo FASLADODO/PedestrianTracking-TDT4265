@@ -24,11 +24,16 @@ classdef Video_reader_wrapper < handle
         
         %% Misc
         
-        function proceed = should_proceed(obj)
+        function proceed = should_proceed_tracking(obj)
             
             global c;
             
             proceed = hasFrame(obj.video_reader) && (obj.video_reader.CurrentTime < c.TRACKING_START + c.TRACKING_DURATION);
+        end
+        
+        function proceed = should_proceed(obj)
+                    
+            proceed = hasFrame(obj.video_reader);
         end
         
         function frame_rate = get_frame_rate(obj)

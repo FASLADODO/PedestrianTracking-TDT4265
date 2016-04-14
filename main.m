@@ -16,7 +16,7 @@ pedestrian_tracker = Pedestrian_tracker();
 
 %% Tracking loop
 
-while (video_reader.should_proceed())
+while (video_reader.should_proceed_tracking())
 
     % Collect data
     
