@@ -374,7 +374,7 @@ classdef Pedestrian_detector < handle
                 
                 obj.has_previous_frame = true;
                 position_measurements = [];
-                difference_image = [];
+                difference_image = zeros(size(obj.current_frame));
                 
                 return;
             end

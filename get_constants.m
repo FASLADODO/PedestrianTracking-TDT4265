@@ -21,7 +21,7 @@ function c = get_constants()
     
     %% Result
     
-    c.STORE_TRACKING_RESULT             = true;
+    c.STORE_TRACKING_RESULT             = false;
     c.TRACKING_RESULT_OUTPUT_FILE       = 'tracking_result_1.avi';
     
     %% Detection
@@ -84,6 +84,6 @@ function c = get_constants()
     
     c.MEAN                              = 1;
     c.CLOSEST_TO_PREDICTION             = 2;
-    c.KALMAN_UPDATE_MEASUREMENT         = 2;
+    c.KALMAN_UPDATE_MEASUREMENT         = c.MEAN;
 end
 

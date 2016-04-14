@@ -21,7 +21,7 @@ classdef Video_writer_wrapper < handle
             if (c.STORE_TRACKING_RESULT)
                 
                 obj.output_video = VideoWriter(filename);
-                obj.output_video.FrameRate = frame_rate / 4;
+                obj.output_video.FrameRate = frame_rate;
                 
                 open(obj.output_video);
             else
@@ -33,13 +33,20 @@ classdef Video_writer_wrapper < handle
         
         function write_frame(obj)
             
-            frame = getframe();
+            global c;
             
-            writeVideo(obj.output_video, frame);
+            if (c.STORE_TRACKING_RESULT)
+                writeVideo(obj.output_video, getframe());
+            end
         end
         
         function close(obj)
-            close(obj.output_video)
+            
+            global c;
+            
+            if (c.STORE_TRACKING_RESULT)
+                close(obj.output_video)
+            end
         end
         
     end 
