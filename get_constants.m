@@ -81,5 +81,9 @@ function c = get_constants()
     c.EXIT_INITIALIZATION_THRESHOLD     = 6;
     c.INACTIVE_THRESHOLD                = 0;
     c.PEDESTRIAN_FILTER_THRESHOLD       = 0.2;
+    
+    c.MEAN                              = 1;
+    c.CLOSEST_TO_PREDICTION             = 2;
+    c.KALMAN_UPDATE_MEASUREMENT         = 2;
 end
 

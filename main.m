@@ -8,11 +8,11 @@ global c; c = get_constants();
 
 %% Setup
 
-video_reader = VideoReaderWrapper();
-video_writer = VideoWriterWrapper(video_reader.get_frame_rate());
+video_reader = Video_reader_wrapper();
+video_writer = Video_writer_wrapper(video_reader.get_frame_rate());
 
-pedestrian_detector = PedestrianDetector();
-pedestrian_tracker = PedestrianTracker();
+pedestrian_detector = Pedestrian_detector();
+pedestrian_tracker = Pedestrian_tracker();
 
 %% Tracking loop
 

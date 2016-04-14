@@ -139,7 +139,7 @@ classdef Pedestrian < handle
         % is closest to the current position in the distance sense, 
         % i.e. nearest neighbour search
         
-        function latest_nn_position_measurement = get_latest_nn_position_measurement(obj)            % Nearest neighbour measurement search
+        function latest_position_measurement = get_position_measurements_closest_to_prediction(obj)            % Nearest neighbour measurement search
             
             % Get last entry in the measurement series and check how many
             % measurements that were made
@@ -148,9 +148,9 @@ classdef Pedestrian < handle
             n = size(obj.measurement_series{index}.positions, 2);
             
             if (n == 0)
-                latest_nn_position_measurement = [];
+                latest_position_measurement = [];
             else
-                latest_nn_position_measurement = obj.measurement_series{index}.positions(:, 1);
+                latest_position_measurement = obj.measurement_series{index}.positions(:, 1);
                 
                 % Loop through and check if any of the other measurement are
                 % closer in the sense of euclidean 2 norm
@@ -159,10 +159,29 @@ classdef Pedestrian < handle
                    
                     position_measurement = obj.measurement_series{index}.positions(:, 2);
                     
-                    if (norm(latest_nn_position_measurement - obj.position) > norm(position_measurement - obj.position))
-                        latest_nn_position_measurement = position_measurement;
+                    if (norm(latest_position_measurement - obj.position) > norm(position_measurement - obj.position))
+                        latest_position_measurement = position_measurement;
                     end
                 end
+            end
+        end
+        
+        function latest_position_measurement = get_position_measurements_mean(obj)
+            
+            index = length(obj.measurement_series);
+            n = size(obj.measurement_series{index}.positions, 2);
+            
+            if (n == 0)
+                latest_position_measurement = [];
+            else
+                sum_position_measurements = 0;
+                
+                for i = 1:n
+                    
+                    sum_position_measurements = sum_position_measurements + obj.measurement_series{index}.positions(:, i);
+                end
+                
+                latest_position_measurement = sum_position_measurements / n;
             end
         end
         
@@ -244,7 +263,15 @@ classdef Pedestrian < handle
         
         function kalman_update(obj, pedestrian_motion_model)
             
-            latest_measurement = obj.get_latest_nn_position_measurement();
+            global c;
+            
+            latest_measurement = [];
+            
+            if (c.KALMAN_UPDATE_MEASUREMENT == c.MEAN)
+                latest_measurement = obj.get_position_measurements_mean();
+            elseif (c.KALMAN_UPDATE_MEASUREMENT == c.CLOSEST_TO_PREDICTION)
+                latest_measurement = obj.get_position_measurements_closest_to_prediction();
+            end
             
             % If no measurement arrived settle with prediction
             
