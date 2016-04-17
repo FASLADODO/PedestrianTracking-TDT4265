@@ -12,19 +12,15 @@ classdef Video_reader_wrapper < handle
         
         %% Constructor
         
-        function obj = Video_reader_wrapper()
-            
-            global c;
-            
-            filename = fullfile('ewap_dataset', c.TRACKING_SEQUENCE, [c.TRACKING_SEQUENCE '.avi']);
-            
+        function obj = Video_reader_wrapper(filename)
             obj.video_reader = VideoReader(filename);
-            obj.video_reader .CurrentTime = c.TRACKING_START;
         end
         
         %% Misc
         
-        function proceed = should_proceed_tracking(obj)
+        % Proceed
+        
+        function proceed = should_proceed_with_tracking(obj)
             
             global c;
             
@@ -36,14 +32,20 @@ classdef Video_reader_wrapper < handle
             proceed = hasFrame(obj.video_reader);
         end
         
+        % Frames
+        
         function frame_rate = get_frame_rate(obj)
             frame_rate = obj.video_reader.FrameRate;
         end
         
-        function frame = read_gray_frame(obj)
+        function gray_frame = read_gray_frame(obj)
             
+            gray_frame = readFrame(obj.video_reader);
+            gray_frame = rgb2gray(gray_frame);
+        end
+        
+        function frame = read_frame(obj)
             frame = readFrame(obj.video_reader);
-            frame = rgb2gray(frame);
         end
         
         % Set time

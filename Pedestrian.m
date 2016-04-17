@@ -219,9 +219,9 @@ classdef Pedestrian < handle
                 if (obj.has_only_unknown_measurements())
                     color = 'y';
                 elseif (c.DISPLAY_TRACK_CONFIDENCE)
-                   color = [0 0 obj.confidence];
+                   color = [0 obj.confidence 0];
                 else
-                    color = 'b';
+                    color = 'g';
                 end
             end
         end

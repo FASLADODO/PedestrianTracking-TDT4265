@@ -2,13 +2,22 @@ function c = get_constants()
 
     c = struct();
     
-    %% General settings
+    %% General input and output settings
     
-    c.TRACKING_SEQUENCE = 'seq_hotel';
-    c.TRACKING_SEQUENCE = 'seq_eth';
+    % Tracking source and results
+    
+    c.TRACKING_SEQUENCE                 = 'seq_hotel';
+    c.TRACKING_SEQUENCE                 = 'seq_eth';
 
-    c.TRACKING_START = 30;
-    c.TRACKING_DURATION = 10;
+    c.TRACKING_START                    = 30;
+    c.TRACKING_DURATION                 = 5;
+    
+    c.TRACKING_VIDEO_FILENAME           = fullfile('ewap_dataset', c.TRACKING_SEQUENCE, [c.TRACKING_SEQUENCE '.avi']);
+    c.TRACKING_RESULT_VIDEO_FILENAME    = ['results/tracking_result_asd.avi'];
+
+    c.STORE_TRACKING_RESULT             = false;
+    c.INFORMATION_TEXT                  = {'Pedestrian', 'tracker'};
+    c.INFROMATION_TEXT_POSITION         = 'southwest';
     
     % Plots
     
@@ -17,12 +26,13 @@ function c = get_constants()
     c.DISPLAY_PEDESTRIAN_RECTANGLES     = true;
     c.DISPLAY_ONLY_ACTIVE_PEDESTRIANS   = true;
     c.DISPLAY_TRACK_CONFIDENCE          = true;
-    c.DISPLAY_TIMESTAMP                 = true;
-    
-    %% Result
-    
-    c.STORE_TRACKING_RESULT             = true;
-    c.TRACKING_RESULT_OUTPUT_FILE       = 'results/tracking_result_1.avi';
+    c.DISPLAY_INFORMATION_TEXT          = true;
+
+    % Merging
+
+    c.MERGE_VIDEO_FILENAME_INPUT_1      = 'results/tracking_result_test.avi';
+    c.MERGE_VIDEO_FILENAME_INPUT_2      = 'results/tracking_result_test.avi';
+    c.MERGE_VIDEO_FILENAME_OUTPUT       = 'results/merge_test.avi';
     
     %% Detection
     

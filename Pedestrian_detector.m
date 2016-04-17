@@ -46,7 +46,7 @@ classdef Pedestrian_detector < handle
             
             % Setup
             
-            video_reader = VideoReaderWrapper();
+            video_reader = Video_reader_wrapper(c.TRACKING_VIDEO_FILENAME);
             
             % Find out how many previously added images there are and begin to count from there
 

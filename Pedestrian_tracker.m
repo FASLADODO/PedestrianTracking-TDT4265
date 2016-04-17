@@ -146,9 +146,9 @@ classdef Pedestrian_tracker < handle
             end
 
             hold on;
-            
-            if (c.DISPLAY_TIMESTAMP)
-                obj.plot_timestamp(current_time);
+
+            if (c.DISPLAY_INFORMATION_TEXT)
+                obj.plot_information_text(current_frame, current_time);
             end
 
             if (c.DISPLAY_MEASUREMENTS)
@@ -167,11 +167,37 @@ classdef Pedestrian_tracker < handle
             
             hold off;
         end
-        
-        % Time
-        
-        function plot_timestamp(obj, current_time)
-            text(20, 20, num2str(current_time), 'Color', 'r', 'FontSize', 18);
+
+        % Information text
+
+        function plot_information_text(obj, current_frame, current_time)
+
+            global c;
+
+            [frame_height, frame_width] = size(current_frame);
+
+            if (strcmp(c.INFROMATION_TEXT_POSITION, 'southwest'))
+
+                horizontal_alignment = 'left';
+                horizontal_position  = 20;
+                vertical_alignment   = 'bottom';
+                vertical_position    = frame_height - 20;
+
+            else % southeast
+
+                horizontal_alignment = 'right';
+                horizontal_position  = frame_width - 20;
+                vertical_alignment   = 'bottom';
+                vertical_position    = frame_height - 20;
+            end
+
+            time_handle = text(horizontal_position, vertical_position, num2str(current_time), 'Color', 'r', 'FontSize', 18);
+            time_handle.HorizontalAlignment = horizontal_alignment;
+            time_handle.VerticalAlignment   = vertical_alignment;
+
+            text_handle = text(horizontal_position, vertical_position - 30, c.INFORMATION_TEXT, 'Color', 'r', 'FontSize', 18);
+            text_handle.HorizontalAlignment = horizontal_alignment;
+            text_handle.VerticalAlignment   = vertical_alignment;
         end
         
         % Position measurements

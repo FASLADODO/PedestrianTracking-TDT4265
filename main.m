@@ -8,15 +8,17 @@ global c; c = get_constants();
 
 %% Setup
 
-video_reader = Video_reader_wrapper();
-video_writer = Video_writer_wrapper(video_reader.get_frame_rate() / 4);
+video_reader = Video_reader_wrapper(c.TRACKING_VIDEO_FILENAME);
+video_reader.set_current_time(c.TRACKING_START);
+
+video_writer = Video_writer_wrapper(c.TRACKING_RESULT_VIDEO_FILENAME, ~c.STORE_TRACKING_RESULT, video_reader.get_frame_rate() / 4);
 
 pedestrian_detector = Pedestrian_detector();
 pedestrian_tracker = Pedestrian_tracker();
 
 %% Tracking loop
 
-while (video_reader.should_proceed_tracking())
+while (video_reader.should_proceed_with_tracking())
 
     % Collect data
     
