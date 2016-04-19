@@ -16,6 +16,7 @@ function c = get_constants()
     c.TRACKING_RESULT_VIDEO_FILENAME    = ['results/tracking_result_asd.avi'];
 
     c.STORE_TRACKING_RESULT             = false;
+    c.RESULTS_FRAME_RATE_REDUCTION      = 4;
     c.INFORMATION_TEXT                  = {'Pedestrian', 'tracker'};
     c.INFROMATION_TEXT_POSITION         = 'southwest';
     
