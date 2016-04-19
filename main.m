@@ -1,7 +1,5 @@
 
 clc;
-%clear all;
-
 warning off;
 
 global c; c = get_constants();

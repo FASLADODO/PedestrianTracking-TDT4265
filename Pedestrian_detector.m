@@ -28,7 +28,7 @@ classdef Pedestrian_detector < handle
             [label, score] = predict(classifier, HOG_features);
         end
         
-        %% Contrast enhancement
+        %% Pre processing
         
         function current_frame = pre_processing(obj, current_frame)
             
@@ -116,26 +116,29 @@ classdef Pedestrian_detector < handle
                 imwrite(training_image, fullfile(c.TRAINING_IMAGE_FOLDER, [num2str(c.TRAINING_CATEGORY) '_' num2str(base_example_number + i) '.png']));
             end
         end
-        
-        %% Classifier training
-        
-        function classifier_training(obj)
-            
+
+        %% Training example folder feature matrix X and label vector Y
+
+        function [X, Y, number_of_training_images] = get_training_folder_features_and_labels(obj)
+
             global c;
-            
+
             % Setup training matrices
 
             directory = dir(c.TRAINING_IMAGE_FOLDER);
             number_of_training_images = length(directory(not([directory.isdir])));
-            
+
             if (number_of_training_images <= 0)
-                disp('No training data was found.');
+                
+                X = [];
+                Y = [];
+
                 return;
             end
 
             X = nan(number_of_training_images, 576);
             Y = nan(number_of_training_images, 1);
-            
+
             % Gather training data
 
             training_image_i = 1;
@@ -165,6 +168,22 @@ classdef Pedestrian_detector < handle
                     category_image_i = category_image_i + 1;
                     training_image_i = training_image_i + 1;
                 end
+            end
+        end
+        
+        %% Classifier training
+        
+        function classifier_training(obj)
+            
+            global c;
+            
+            % Gather training data
+
+            [X, Y, number_of_training_images] = obj.get_training_folder_features_and_labels();
+
+            if (number_of_training_images <= 0)
+                disp('No training data was found.');
+                return;
             end
 
             % Train classifiers and store them
