@@ -73,7 +73,10 @@ classdef Pedestrian_tracker < handle
         % Favors tracks which are consistent
         
         function cost = measurement_connection_cost(obj, position_offset, age)
-            cost = norm(position_offset) - 0.5 * max(20, age);
+            
+            global c;
+            
+            cost = norm(position_offset) - c.COST_AGE_WEIGHT * max(c.COST_AGE_SATURATION, age);
         end
         
         function distribute_position_measurement(obj, position_measurement, position_measurement_label)

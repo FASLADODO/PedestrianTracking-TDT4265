@@ -96,5 +96,8 @@ function c = get_constants()
     c.MEAN                              = 1;
     c.CLOSEST_TO_PREDICTION             = 2;
     c.KALMAN_UPDATE_MEASUREMENT         = c.MEAN;
+    
+    c.COST_AGE_WEIGHT                   = 0.5;
+    c.COST_AGE_SATURATION               = 20;
 end
 
