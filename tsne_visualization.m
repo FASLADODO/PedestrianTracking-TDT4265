@@ -19,5 +19,6 @@ pedestrian_detector = Pedestrian_detector();
 mapped_X = tsne(X);
 
 gscatter(mapped_X(:, 1), mapped_X(:, 2), Y, 'br', 'xo');
+
 legend('Clutter', 'Pedestrians');
 title(['Tracking sequence: ' c.TRACKING_SEQUENCE], 'Interpreter', 'none');

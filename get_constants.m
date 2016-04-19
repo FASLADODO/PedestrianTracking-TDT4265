@@ -7,7 +7,7 @@ function c = get_constants()
     % Tracking source and results
     
     c.TRACKING_SEQUENCE                 = 'seq_hotel';
-    %c.TRACKING_SEQUENCE                 = 'seq_eth';
+    c.TRACKING_SEQUENCE                 = 'seq_eth';
 
     c.TRACKING_START                    = 30;
     c.TRACKING_DURATION                 = 5;
