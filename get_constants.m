@@ -13,7 +13,7 @@ function c = get_constants()
     c.TRACKING_DURATION                 = 5;
     
     c.TRACKING_VIDEO_FILENAME           = fullfile('ewap_dataset', c.TRACKING_SEQUENCE, [c.TRACKING_SEQUENCE '.avi']);
-    c.TRACKING_RESULT_VIDEO_FILENAME    = ['results/tracking_result_asd.avi'];
+    c.TRACKING_RESULT_VIDEO_FILENAME    = 'results/tracking_result_asd.avi';
 
     c.STORE_TRACKING_RESULT             = false;
     c.RESULTS_FRAME_RATE_REDUCTION      = 4;
@@ -39,7 +39,7 @@ function c = get_constants()
     
     % Training
     
-    c.TRAINING_IMAGE_FOLDER             = ['training_examples_' c.TRACKING_SEQUENCE '/'];
+    c.TRAINING_IMAGE_FOLDER             = ['training_examples_' c.TRACKING_SEQUENCE];
     c.TRAINING_IMAGE_WIDTH              = 40;
     c.TRAINING_IMAGE_HEIGHT             = 40;
     

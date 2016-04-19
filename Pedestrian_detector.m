@@ -113,7 +113,7 @@ classdef Pedestrian_detector < handle
                 % Write training image, file name
                 % [(TRAINING_CATEGORY)_(EXAMPLE_NUMBER)].png
 
-                imwrite(training_image, [c.TRAINING_IMAGE_FOLDER num2str(c.TRAINING_CATEGORY) '_' num2str(base_example_number + i) '.png']);
+                imwrite(training_image, fullfile(c.TRAINING_IMAGE_FOLDER, [num2str(c.TRAINING_CATEGORY) '_' num2str(base_example_number + i) '.png']));
             end
         end
         
@@ -149,7 +149,7 @@ classdef Pedestrian_detector < handle
                     % If the current exists extract HOG feature descriptor
                     % and add to training matrix
                     
-                    filename = [c.TRAINING_IMAGE_FOLDER num2str(training_category) '_' num2str(category_image_i) '.png'];
+                    filename = fullfile(c.TRAINING_IMAGE_FOLDER, [num2str(training_category) '_' num2str(category_image_i) '.png']);
 
                     if (exist(filename, 'file'))
 
